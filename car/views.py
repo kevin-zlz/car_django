@@ -74,3 +74,4 @@ def querycardetailbyid(request):
 
 
 
+
