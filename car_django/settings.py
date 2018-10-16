@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'user',
     'car',
     'traval',
+    'boke',
 ]
 
 MIDDLEWARE = [
