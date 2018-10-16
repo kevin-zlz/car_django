@@ -11,13 +11,21 @@ from datetime import datetime
 class UserAriseTravel(models.Model):
     # 发起人
     initiator=models.ForeignKey(to=UserBase,to_field='id',on_delete=models.CASCADE,default=1)
+    # 出发地点
     travelstartplace=models.CharField(max_length=50,null=True)
+    # 出发时间
     travelstrattime=models.DateTimeField()
+    # 活动结束时间
     travelendtime=models.DateTimeField()
+    # 成员数
     menbers=models.IntegerField()
+    # 联系人
     linkname=models.CharField(max_length=30)
+    # 联系电话
     linknumber=models.CharField(max_length=30)
+    # 其他描述
     destribe=models.CharField(max_length=100)
+    # 发布时间
     pubtime=models.DateTimeField(default=datetime.now())
 
 # 旅游路线表

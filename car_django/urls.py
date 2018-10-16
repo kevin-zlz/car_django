@@ -26,4 +26,5 @@ urlpatterns = [
     #路由部分
     url(r'^user/', include('user.urls',namespace='car_django.user')),
     url(r'^car/', include('car.urls',namespace='car_django.car')),
+    url(r'^travel/', include('traval.urls',namespace='car_django.traval')),
 ]
