@@ -2,7 +2,6 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.http import HttpResponse,JsonResponse,response
-from datetime import datetime
 import json
 from . import models
 from utils.tokenHelper import jwtEncoding,jwtDecoding
@@ -54,6 +53,38 @@ def addcitystore(request):
 
 # 查询通过城市编号查询城市门店
 def querycitystore(request):
+    city = {
+        "cityname": "北京"
+    }
+    if request.method == 'POST':
+        try:
+            strictandstores=[]
+            stricts = models.City.objects.filter(cityname=city['cityname']).values('strictname','id')
+            for strict in stricts:
+                stores=models.CityStore.objects.filter(id=strict['id']).values('storename','storetel','detailaddress','storetime')
+                storelist=[]
+                for store in stores:
+                    storelist.append({
+                        "storename":store['storename'],
+                        "storetel":store['storetel'],
+                        "detailaddress":store['detailaddress'],
+                        "storetime":store['storetime']
+                    })
+                strictandstore={
+                    "strictname":strict["strictname"],
+                    "stores":storelist
+                }
+                strictandstores.append(strictandstore)
+            # print(strictandstores)
+            return JsonResponse({"code": "808"})
+        except Exception as ex:
+            return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
+    pass
+
+# 添加门店下的车辆
+def addcartostore(request):
     pass
 
 # 查询门店下面的可用汽车
@@ -67,6 +98,7 @@ def querycarbyconditions(request):
 # 根据汽车id查询车辆详情
 def querycardetailbyid(request):
     pass
+
 
 
 

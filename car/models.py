@@ -5,14 +5,21 @@ from django.db import models
 import json
 # Create your models here.
 class City(models.Model):
+    # 城市名称
     cityname=models.CharField(max_length=30)
+    # 区名称
     strictname=models.CharField(max_length=50)
 
 class CityStore(models.Model):
+    # 服务店名称
     storename=models.CharField(max_length=50)
+    # 服务点所在城市，区
     storeaddress=models.ForeignKey(to='City',to_field='id',on_delete=models.CASCADE,default=1)
+    # 服务点详细地址
     detailaddress=models.CharField(max_length=100)
+    # 服务点电话
     storetel=models.CharField(max_length=30)
+    # 服务点营业时间
     storetime=models.CharField(max_length=50)
 
 class CarBase(models.Model):
@@ -25,6 +32,7 @@ class CarBase(models.Model):
 
 class CarImages(models.Model):
     car = models.ForeignKey(to='CarBase', to_field='id', on_delete=models.CASCADE, default=1)
+    # 车辆图片
     icon = models.CharField(max_length=100, default='user.jpg')
     # 新建外键约束
     # 外键约束的名称:leixing_id

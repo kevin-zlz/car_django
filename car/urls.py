@@ -27,6 +27,7 @@ urlpatterns = [
     # #路由部分
     url(r'addcity/', views.addcity, name='addcity'),
     url(r'addcitystore/', views.addcitystore, name='addcitystore'),
+    url(r'querycitystore/', views.querycitystore, name='querycitystore'),
     # url(r'^car/', include('car.urls',namespace='django_jobapp.job')),
 
 ]
