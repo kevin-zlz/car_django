@@ -52,9 +52,77 @@ def addcitystore(request):
                     uu = models.CityStore.objects.create(**city)
         return JsonResponse({"code": "808"})
 
-# 查询通过城市编号查询城市门店
-def querycitystore(request):
-    pass
+# 查询通过城市名查询城市地区
+def querystrictname(request):
+    if request.method == 'POST':
+        try:
+            total={}
+            cityname=json.loads(request.body)["cityname"]
+            stricts= models.City.objects.filter(cityname=cityname).values('strictname')
+            l_strict=list(stricts)
+            total['cityname'] = cityname
+            total['strictname']=l_strict
+            print(total)
+
+            return JsonResponse(total)
+
+        except Exception as ex:
+            print(ex)
+            return JsonResponse({"node": "408"})
+    else:
+        return JsonResponse({"code": "404"})
+
+# 通过地区名查询门店详情
+def querystoredetail(request):
+    if request.method == 'POST':
+        try:
+            total={}
+            strictname=json.loads(request.body)["strictname"]
+            storeaddress_id= models.City.objects.filter(strictname=strictname).values('id')
+            storeaddress_city= models.City.objects.filter(strictname=strictname).values('cityname')
+            id=list(storeaddress_id)[0]['id']
+            city=list(storeaddress_city)[0]['cityname']
+            # total['cityname'] = cityname
+            # total['strictname']=l_strict
+            # print(total)
+            storedetail=models.CityStore.objects.filter(storeaddress_id=id).values('storename','detailaddress','storetel','storetime')
+            storedetails=list(storedetail)
+            t=[]
+            for i in storedetails:
+                s={}
+                s['storename']=i['storename']
+                del i['storename']
+                s['detail']=i
+                t.append(s)
+            total['all']=t
+            # print(t)
+            # total['cityname'] = city
+            # total['detail']=storedetails
+
+
+            return JsonResponse(total)
+
+        except Exception as ex:
+            print(ex)
+            return JsonResponse({"node": "408"})
+    else:
+        return JsonResponse({"code": "404"})
+
+# 添加汽车详情
+def addcardetail(request):
+    if request.method == 'POST':
+        # strict=set()
+        try:
+            with open('carsdetail.json', 'r',encoding='utf-8') as fp:
+                cars= json.load(fp)
+                print('===============================')
+                print(cars)
+                for car in cars:
+                    res= models.CarDetail.objects.create(**car)
+
+            return JsonResponse({"code": "808"})
+        except Exception as ex:
+            return JsonResponse({"code": "409"})
 
 # 查询门店下面的可用汽车
 def querycarbystore(request):
