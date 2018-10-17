@@ -1,0 +1,226 @@
+[
+  {
+    "carname": "丰田致炫",
+    "brand": "丰田",
+    "price": "96元/日",
+    "cartype": "经济型",
+    "carid": "闽CY7210"
+  },
+  {
+    "carname": "起亚K2",
+    "brand": "起亚",
+    "price": "96元/日",
+    "cartype": "经济型",
+    "carid": "沪CH5974"
+  },
+  {
+    "carname": "别克凯越",
+    "brand": "别克",
+    "price": "100元/日",
+    "cartype": "经济型",
+    "carid": "冀HN1837"
+  },
+  {
+    "carname": "2014雪铁龙爱丽舍",
+    "brand": "雪铁龙",
+    "price": "103元/日",
+    "cartype": "经济型",
+    "carid": "赣JP8341"
+  },
+  {
+    "carname": "大众斯柯达明锐",
+    "brand": "斯柯达",
+    "price": "108元/日",
+    "cartype": "经济型",
+    "carid": "沪BN0726"
+  },
+  {
+    "carname": "雪佛兰科鲁兹",
+    "brand": "雪佛兰",
+    "price": "108元/日",
+    "cartype": "经济型",
+    "carid": "浙EB6942"
+  },
+  {
+    "carname": "大众朗逸",
+    "brand": "大众",
+    "price": "108元/日",
+    "cartype": "经济型",
+    "carid": "京GT4012"
+  },
+  {
+    "carname": "雪佛兰新科鲁兹",
+    "brand": "雪佛兰",
+    "price": "118元/日",
+    "cartype": "经济型",
+    "carid": "沪AW5681"
+  },
+  {
+    "carname": "大众朗逸",
+    "brand": "大众",
+    "price": "118元/日",
+    "cartype": "经济型",
+    "carid": "蒙KS7859"
+  },
+  {
+    "carname": "别克英朗",
+    "brand": "别克",
+    "price": "118元/日",
+    "cartype": "经济型",
+    "carid": "晋JQ7396"
+  },
+  {
+    "carname": "大众凌渡",
+    "brand": "大众",
+    "price": "137元/日",
+    "cartype": "经济型",
+    "carid": "吉HA9230"
+  },
+  {
+    "carname": "2016别克昂科拉",
+    "brand": "别克",
+    "price": "148元/日",
+    "cartype": "SUV",
+    "carid": "沪AN5980"
+  },
+  {
+    "carname": "起亚K5",
+    "brand": "起亚",
+    "price": "149元/日",
+    "cartype": "商务型",
+    "carid": "皖DM4215"
+  },
+  {
+    "carname": "雪佛兰迈锐宝",
+    "brand": "雪佛兰",
+    "price": "149元/日",
+    "cartype": "商务型",
+    "carid": "蒙CV7980"
+  },
+  {
+    "carname": "别克威朗",
+    "brand": "别克",
+    "price": "149元/日",
+    "cartype": "商务型",
+    "carid": "冀DB3275"
+  },
+  {
+    "carname": "丰田凯美瑞",
+    "brand": "丰田",
+    "price": "174元/日",
+    "cartype": "商务型",
+    "carid": "冀TN8724"
+  },
+  {
+    "carname": "雪佛兰科帕奇两驱",
+    "brand": "雪佛兰",
+    "price": "192元/日",
+    "cartype": "SUV",
+    "carid": "苏LD1346"
+  },
+  {
+    "carname": "华晨华颂7",
+    "brand": "华颂",
+    "price": "197元/日",
+    "cartype": "6至15座商务",
+    "carid": "皖MT8147"
+  },
+  {
+    "carname": "雪佛兰科帕奇四驱",
+    "brand": "雪佛兰",
+    "price": "206元/日",
+    "cartype": "SUV",
+    "carid": "晋LC6193"
+  },
+  {
+    "carname": "别克昂科威",
+    "brand": "别克",
+    "price": "211元/日",
+    "cartype": "SUV",
+    "carid": "闽BR8154"
+  },
+  {
+    "carname": "大众帕萨特",
+    "brand": "大众",
+    "price": "211元/日",
+    "cartype": "商务型",
+    "carid": "津CC4231"
+  },
+  {
+    "carname": "别克君越",
+    "brand": "别克",
+    "price": "211元/日",
+    "cartype": "商务型",
+    "carid": "浙GE0471"
+  },
+  {
+    "carname": "大众途观",
+    "brand": "大众",
+    "price": "211元/日",
+    "cartype": "SUV",
+    "carid": "苏LI3524"
+  },
+  {
+    "carname": "大众途观",
+    "brand": "大众",
+    "price": "251元/日",
+    "cartype": "SUV",
+    "carid": "吉DJ9681"
+  },
+  {
+    "carname": "别克昂科威",
+    "brand": "别克",
+    "price": "251元/日",
+    "cartype": "SUV",
+    "carid": "苏JO3276"
+  },
+  {
+    "carname": "别克GL8",
+    "brand": "别克",
+    "price": "286元/日",
+    "cartype": "6至15座商务",
+    "carid": "黑HL5239"
+  },
+  {
+    "carname": "2017别克GL8",
+    "brand": "别克",
+    "price": "327元/日",
+    "cartype": "6至15座商务",
+    "carid": "晋CW9054"
+  },
+  {
+    "carname": "凯迪拉克XTS",
+    "brand": "凯迪拉克",
+    "price": "354元/日",
+    "cartype": "豪华型",
+    "carid": "沪AV8652"
+  },
+  {
+    "carname": "奥迪A6",
+    "brand": "奥迪",
+    "price": "482元/日",
+    "cartype": "豪华型",
+    "carid": "冀RN4091"
+  },
+  {
+    "carname": "宝马3系",
+    "brand": "宝马",
+    "price": "563元/日",
+    "cartype": "豪华型",
+    "carid": "蒙BH2703"
+  },
+  {
+    "carname": "沃尔沃S90",
+    "brand": "沃尔沃",
+    "price": "610元/日",
+    "cartype": "豪华型",
+    "carid": "京AX2978"
+  },
+  {
+    "carname": "沃尔沃S90",
+    "brand": "沃尔沃",
+    "price": "643元/日",
+    "cartype": "豪华型",
+    "carid": "闽CU1384"
+  }
+]
