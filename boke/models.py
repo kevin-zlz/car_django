@@ -25,6 +25,8 @@ class ArticalComment(models.Model):
     artical=models.ForeignKey(to=Aritical,to_field='id',on_delete=models.CASCADE,default=1)
     # 评论人
     commener=models.ForeignKey(to=UserBase,to_field='id',on_delete=models.CASCADE,default=1)
+    # 评论内容
+    content=models.TextField(max_length=500,default='')
     # 评论时间
     pubtime = models.DateTimeField(auto_now_add=True)
 
