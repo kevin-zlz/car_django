@@ -18,16 +18,21 @@ from django.urls import path
 from django.conf.urls import url,include
 from . import views
 
-app_name = 'car'
+app_name = 'boke'
 #主路由
 urlpatterns = [
     # url(r'admin/', admin.site.urls),
     # # 匹配空路由
     # url(r'^$', views.index,name='myindex'),
     # #路由部分
-    url(r'addcity/', views.addcity, name='addcity'),
-    url(r'addcitystore/', views.addcitystore, name='addcitystore'),
-    url(r'querycitystore/', views.querycitystore, name='querycitystore'),
-    # url(r'^car/', include('car.urls',namespace='django_jobapp.job')),
-
+    url(r'queryWritebyuid/', views.queryWritebyuid, name='queryWritebyuid'),
+    url(r'queryAllAritical/', views.queryAllAritical, name='queryAllAritical'),
+    url(r'queryCommentbyuid/', views.queryCommentbyuid, name='queryCommentbyuid'),
+    url(r'queryLikebyuid/', views.queryLikebyuid, name='queryLikebyuid'),
+    url(r'queryLikebyaid/', views.queryLikebyaid, name='queryLikebyaid'),
+    url(r'queryCommentbyaid/', views.queryCommentbyaid, name='queryCommentbyaid'),
+    url(r'addAritical/', views.addAritical, name='addAritical'),
+    url(r'addComment/', views.addComment, name='addComment'),
+    url(r'addLike/', views.addLike, name='addLike'),
+    url(r'deletelike/', views.deletelike, name='deletelike'),
 ]

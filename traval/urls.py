@@ -13,21 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
 from django.conf.urls import url,include
 from . import views
-
-app_name = 'car'
-#主路由
+app_name = 'traval'
+#user子路由
 urlpatterns = [
-    # url(r'admin/', admin.site.urls),
-    # # 匹配空路由
-    # url(r'^$', views.index,name='myindex'),
-    # #路由部分
-    url(r'addcity/', views.addcity, name='addcity'),
-    url(r'addcitystore/', views.addcitystore, name='addcitystore'),
-    url(r'querycitystore/', views.querycitystore, name='querycitystore'),
-    # url(r'^car/', include('car.urls',namespace='django_jobapp.job')),
-
+    # url(r'^$',views.personal,name='personal'),
+    # # 后面的/不能省略
+    url(r'queryTravelByuid/', views.queryTravelByuid, name='queryTravelByuid'),
+    url(r'queryInitatorTravel/', views.queryInitatorTravel, name='queryInitatorTravel'),
+    url(r'queryJoinedTravel/', views.queryJoinedTravel, name='queryJoinedTravel'),
+    url(r'queryNotJoinTravel/', views.queryNotJoinTravel, name='queryNotJoinTravel'),
+    url(r'cancelNotJoinTravel/', views.cancelNotJoinTravel, name='cancelNotJoinTravel'),
+    # url(r'^getuser\w*/(?P<id>\d*)', views.getuserbyid, name='getuser'),
 ]
