@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'addcity/', views.addcity, name='addcity'),
     url(r'addcitystore/', views.addcitystore, name='addcitystore'),
     url(r'querycitystore/', views.querycitystore, name='querycitystore'),
+    url(r'addcartostore/', views.addcartostore, name='addcartostore'),
+    url(r'queryStoresbycity/', views.queryStoresbycity, name='queryStoresbycity'),
     # url(r'^car/', include('car.urls',namespace='django_jobapp.job')),
 
 ]
