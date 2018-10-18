@@ -43,12 +43,12 @@ def regist(request):
         "pub_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         "email":data['email']
     }
+    print(user)
     if request.method == 'POST':
         try:
             result={"code": "808"}
             uu = models.UserBase.objects.create(**user)
-            resp = response.HttpResponse(json.dumps(result), status=200, charset='utf-8',
-                                         content_type='application/json')
+            resp = response.HttpResponse(json.dumps(result), status=200, charset='utf-8',content_type='application/json')
             resp['token'] = jwtEncoding(data['telephone'])
             resp['Access-Control-Expose-Headers'] = 'token'
             return resp
