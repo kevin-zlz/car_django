@@ -47,7 +47,7 @@ class OrderType(models.Model):
     typename = models.CharField(max_length=20)
 # 还车表
 class ReturnCar(models.Model):
-    returncarplace = models.ForeignKey(to=CityStore, to_field='id', on_delete=models.CASCADE)
+    returncar = models.ForeignKey(to=CityStore, to_field='id', on_delete=models.CASCADE)
 # 用户订单表
 class UserOrder(models.Model):
     yonghu = models.ForeignKey(to=UserBase, to_field='id', on_delete=models.CASCADE)
@@ -59,4 +59,6 @@ class UserOrder(models.Model):
     add_time=models.DateTimeField(auto_now_add=True)
     orderstate=models.ForeignKey(to=OrderState,to_field='id',on_delete=models.CASCADE,default=1)
     ordertype=models.ForeignKey(to=OrderType,to_field='id',on_delete=models.CASCADE,default=1)
+
+
 
