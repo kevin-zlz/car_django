@@ -44,7 +44,6 @@ def addcitystore(request):
                 data = data1[j]['sites']
 
                 for i in range(len(data['sites'])):
-                    print(models.City.objects.filter(strictname=data['sites'][i]['area']).values('id'))
                     city = {
                         "storename": data['sites'][i]['name'],
                         "detailaddress": data['sites'][i]['address'],
@@ -83,7 +82,8 @@ def querycitystore(request):
                 }
                 strictandstores.append(strictandstore)
             # print(strictandstores)
-            return JsonResponse({"code": "808"})
+            return JsonResponse(strictandstores,safe=False)
+            # return JsonResponse({"code": "808"})
         except Exception as ex:
             return JsonResponse({"code": "408"})
     else:
@@ -129,6 +129,30 @@ def creatCarId():
     carid = head + body + leg + foot
     return carid
 
+# 添加汽车详情
+def addcardetail(request):
+    try:
+        if request.method == 'POST':
+            carsbase=models.CarBase.objects.all().values('id','carname','price')
+            carsbase=list(carsbase)
+            # print(carsbase)
+            with open('carsdetail_new.json', 'r',encoding='utf-8') as fp:
+                cars=json.load(fp)
+
+
+            for car in cars:
+                for i in carsbase:
+                    if car['carname']==i['carname'] and int(car['price'].split('元')[0])==i['price']:
+                        res=models.CarDetail.objects.create(chexi=car['chexi'],niandaikuan=car['niandaikuan'],peizhikun=car['peizhikun'],sitenum=car['sitenum'],doornum=car['doornum'],oiltype=car['oitype'],changespeed=car['changespeed'],pailiang=car['pailiang'],oilnum=car['oilnum'],qudong=car['qudong'],jinqixingshi=car['jinqixingshi'],carwindow=car['carwindow'],oilcaptiy=car['oilcaptiy'],musicnum=car['musicnum'],sitetype=car['sitetype'],isdaocheleida=car['isdaocheleida'],isqinang=car['isqinang'],isdvd=car['isdvd'],isgps=car['isgps'],car_id=i['id'])
+
+            return JsonResponse({"code": "808"})
+    except Exception as ex:
+        print(ex)
+        return JsonResponse({"code":"408"})
+
+
+
+
 
 # 查询门店下面的可用汽车
 def querycarbystore(request):
@@ -136,13 +160,27 @@ def querycarbystore(request):
 
 
 # 多条件查询汽车基本信息
+
 def querycarbyconditions(request):
     pass
 
 
 # 根据汽车id查询车辆详情
 def querycardetailbyid(request):
-    pass
+    # 测试数据:
+    #     {
+    #         "id":"2"
+    #     }
+    if request.method == 'POST':
+        try:
+            id = json.loads(request.body)['id']
+            detail = models.CarDetail.objects.filter(car_id=id).values()
+            detail = list(detail)[0]
+            return JsonResponse(detail)
+        except Exception as ex:
+            return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
 
 # 根据城市查询门店
 def queryStoresbycity(request):

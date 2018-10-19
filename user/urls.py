@@ -25,6 +25,10 @@ urlpatterns = [
     url(r'addReturnCar/', views.addReturnCar, name='addReturnCar'),
     url(r'addorder/', views.addorder, name='addorder'),
     url(r'queryOrder/', views.queryOrder, name='queryOrder'),
-    url(r'^getuser\w*/(?P<id>\d*)', views.getuserbyid, name='getuser'),
+    url(r'^getuserbyid/', views.getuserbyid, name='getuserbyid'),
+    url(r'^adduserdetailbyid/', views.adduserdetailbyid, name='adduserdetailbyid'),
+    url(r'^updatetelbyid/', views.updatetelbyid, name='updatetelbyid'),
+    url(r'^updatepswbyid/', views.updatepswbyid, name='updatepswbyid'),
+    url(r'^updateuserdetailbyid/', views.updateuserdetailbyid, name='updateuserdetailbyid'),
 
 ]
