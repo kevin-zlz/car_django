@@ -2,7 +2,7 @@ import datetime
 import jwt
 SECRECT_KEY="orsp"
 def jwtEncoding(some, aud='webkit'):
-    datetimeInt = datetime.datetime.utcnow() + datetime.timedelta(seconds=180)
+    datetimeInt = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
     option = {
         'iss': 'jobapp.com',
         'exp': datetimeInt,
@@ -15,7 +15,11 @@ def jwtEncoding(some, aud='webkit'):
 
 def jwtDecoding(token):
     decoded = jwt.decode(token, SECRECT_KEY, audience='webkit', algorithms=['HS256'])
-    if decoded:
-        return True
-    else:
-        return False
+    # if decoded:
+    #     return {
+    #         "telphone":decoded
+    #     }
+    # else:
+    #     return ''
+
+    return decoded
