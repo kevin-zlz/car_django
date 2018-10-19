@@ -5,6 +5,11 @@ import json
 from . import models
 from utils.tokenHelper import jwtEncoding,jwtDecoding
 from werkzeug.security import generate_password_hash, check_password_hash
+# ------------------------------
+import uuid
+import car_django.settings as settings
+# -----------------------------
+
 # Create your views here.
 # 用户登录
 def login(request):
@@ -134,4 +139,47 @@ def addReturnCar(request):
             }
             models.ReturnCar.objects.create(**temp)
         return JsonResponse({"code":"208"})
+
+
+# 上传驾照
+def DicLoad(request):
+    if request.method == 'POST':
+        try:
+            # 此处可以接收文件和字符串
+            f1 = request.FILES['usericon']
+            # 设置保存的文件名
+            fname = '%s/pic/%s' % (settings.STATICFILES_DIRS[0], f1.name)
+            # 由于文件是二进制流的方式，所有要用chunks()
+            with open(fname, 'wb') as pic:
+                for c in f1.chunks():
+                    pic.write(c)
+            # 驾照背面
+
+            return JsonResponse({"code": "808"})
+        except Exception as ex:
+            print(ex)
+            return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
+
+
+# 修改头像
+def UpHead(request):
+    if request.method == 'POST':
+        try:
+            # 此处可以接收文件和字符串
+            f1 = request.FILES['usericon']
+            # 设置保存的文件名
+            fname = '%s/pic/%s' % (settings.STATICFILES_DIRS[0], f1.name)
+            # 由于文件是二进制流的方式，所有要用chunks()
+            with open(fname, 'wb') as pic:
+                for c in f1.chunks():
+                    pic.write(c)
+            return JsonResponse({"code": "808"})
+        except Exception as ex:
+            print(ex)
+            return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
+
 
