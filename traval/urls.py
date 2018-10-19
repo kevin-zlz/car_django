@@ -25,5 +25,6 @@ urlpatterns = [
     url(r'queryJoinedTravel/', views.queryJoinedTravel, name='queryJoinedTravel'),
     url(r'queryNotJoinTravel/', views.queryNotJoinTravel, name='queryNotJoinTravel'),
     url(r'cancelNotJoinTravel/', views.cancelNotJoinTravel, name='cancelNotJoinTravel'),
+    url(r'addTraval/', views.addTraval, name='addTraval'),
     # url(r'^getuser\w*/(?P<id>\d*)', views.getuserbyid, name='getuser'),
 ]

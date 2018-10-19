@@ -43,12 +43,12 @@ def regist(request):
         "pub_time": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         "email":data['email']
     }
+    print(user)
     if request.method == 'POST':
         try:
             result={"code": "808"}
             uu = models.UserBase.objects.create(**user)
-            resp = response.HttpResponse(json.dumps(result), status=200, charset='utf-8',
-                                         content_type='application/json')
+            resp = response.HttpResponse(json.dumps(result), status=200, charset='utf-8',content_type='application/json')
             resp['token'] = jwtEncoding(data['telephone'])
             resp['Access-Control-Expose-Headers'] = 'token'
             return resp
@@ -78,4 +78,60 @@ def updatepswbyid(request):
 # 更新用户详细信息
 def updateuserdetailbyid(request):
     return HttpResponse(json.dumps({"code": 202}))
+# 用户根据id查询所有订单
+def queryOrder(request):
+    if request.method == 'POST':
+        try:
+            token=request.META.get('HTTP_TOKEN')
+            if jwtDecoding(token):
+                telphone=jwtDecoding(token)['some']
+                uid=models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
+                uu=models.UserOrder.objects.filter(yonghu_id=uid).values('id','car__carname','takecarplace__detailaddress',
+                                                                         'takecarplace__storeaddress__cityname','takecarplace__storeaddress__strictname',
+                                                                         'takecartime','returncarplace__returncar__storeaddress__cityname',
+                                                                         'returncarplace__returncar__storeaddress__strictname','returncarplace__returncar__detailaddress',
+                                                                         'returncartime','orderstate__statename','ordertype__typename','car__price')
+                return JsonResponse(list(uu),safe=False)
+            else:
+                return JsonResponse({"code":"408"})
+        except Exception as e:
+            return JsonResponse({"msg":e})
+
+
+# 用户下订单
+def addorder(request):
+    if request.method == 'POST':
+        try:
+            token=request.META.get('HTTP_TOKEN')
+            if jwtDecoding(token):
+                telphone=jwtDecoding(token)['some']
+                uid=models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
+                order={
+                    "yonghu_id":uid,
+                    "car_id":1,
+                    "takecarplace_id":2,
+                    "takecartime":datetime.strptime('2018-10-16 10:00:00','%Y-%m-%d %H:%M:%S'),
+                    "returncarplace_id":models.ReturnCar.objects.filter(returncar__id=3).values('id')[0]['id'],
+                    "returncartime":datetime.strptime('2018-10-18 16:00:00','%Y-%m-%d %H:%M:%S'),
+                    "orderstate_id":1,
+                    "ordertype_id":1
+                }
+                uu=models.UserOrder.objects.create(**order)
+                print(uu)
+                return JsonResponse({"code":"208"})
+            else:
+                return JsonResponse({"code":"408"})
+        except Exception as e:
+            return JsonResponse({"msg":e})
+
+# 添加还车表
+def addReturnCar(request):
+    if request.method == 'POST':
+        stores=models.CityStore.objects.all().values('id')
+        for store in stores:
+            temp={
+                "returncar_id":store['id']
+            }
+            models.ReturnCar.objects.create(**temp)
+        return JsonResponse({"code":"208"})
 

@@ -22,6 +22,9 @@ urlpatterns = [
     # 后面的/不能省略
     url(r'login/', views.login, name='login'),
     url(r'regist/', views.regist, name='regist'),
+    url(r'addReturnCar/', views.addReturnCar, name='addReturnCar'),
+    url(r'addorder/', views.addorder, name='addorder'),
+    url(r'queryOrder/', views.queryOrder, name='queryOrder'),
     url(r'^getuser\w*/(?P<id>\d*)', views.getuserbyid, name='getuser'),
 
 ]

@@ -31,6 +31,8 @@ class UserAriseTravel(models.Model):
 # 旅游路线表
 class TravelPlace(models.Model):
     places = models.ForeignKey(to=UserAriseTravel, to_field='id', on_delete=models.CASCADE, default=1)
+    address= models.CharField(max_length=50,default='')
+
 
 # 旅游参与表
 class UserJoinTravel(models.Model):
