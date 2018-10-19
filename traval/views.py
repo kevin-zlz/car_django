@@ -4,6 +4,7 @@ from django.http import HttpResponse,JsonResponse,response
 from datetime import datetime
 import json
 from . import models
+from utils.tokenHelper import jwtDecoding
 # 根据用户id查询用户参与的所有活动
 def queryTravelByuid(request):
     if request.method == 'POST':
@@ -89,22 +90,27 @@ def queryInitatorTravel(request):
 # 添加一条UserAriseTravel记录
 def addTraval(request):
     if request.method == 'POST':
-        user = {
-            "initiator_id":2,
-            "travelstartplace":"南京",
-            "travelstrattime":"2018-10-25 9:30:00",
-            "travelendtime":"2018-11-25 9:30:00",
-            "menbers":5,
-            "linkname":"王文成",
-            "linknumber":"15776540858",
-            "destribe":"无",
-            "pubtime":"2018-10-11"
-        }
-        try:
-            uu = models.UserAriseTravel.objects.create(**user)
-            return JsonResponse({"statuscode": "201"})
-        except Exception as ex:
-            return JsonResponse({"statuscode": "401"})
-    else:
-        return JsonResponse({"statuscode": "402"})
+        token = request.META.get('HTTP_TOKEN')
+        if jwtDecoding(token):
+            telphone = jwtDecoding(token)['some']
+            uid = models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
+            data = json.loads(request.body, encoding='utf-8')
+            user = {
+                "initiator_id":uid,
+                "travelstartplace":"南京",
+                "travelstrattime":"2018-10-25 9:30:00",
+                "travelendtime":"2018-11-25 9:30:00",
+                "menbers":5,
+                "linkname":"王文成",
+                "linknumber":"15776540858",
+                "destribe":"无",
+                "pubtime":"2018-10-11"
+            }
+            try:
+                uu = models.UserAriseTravel.objects.create(**user)
+                return JsonResponse({"statuscode": "201"})
+            except Exception as ex:
+                return JsonResponse({"statuscode": "401"})
+        else:
+            return JsonResponse({"statuscode": "402"})
 
