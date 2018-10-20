@@ -20,11 +20,14 @@ app_name = 'traval'
 urlpatterns = [
     # url(r'^$',views.personal,name='personal'),
     # # 后面的/不能省略
+
     url(r'queryTravelByuid/', views.queryTravelByuid, name='queryTravelByuid'),
     url(r'queryInitatorTravel/', views.queryInitatorTravel, name='queryInitatorTravel'),
     url(r'queryJoinedTravel/', views.queryJoinedTravel, name='queryJoinedTravel'),
     url(r'queryNotJoinTravel/', views.queryNotJoinTravel, name='queryNotJoinTravel'),
     url(r'cancelNotJoinTravel/', views.cancelNotJoinTravel, name='cancelNotJoinTravel'),
     url(r'addTraval/', views.addTraval, name='addTraval'),
+    url(r'(?i)queryalltravel/', views.queryAllTravel, name='queryAllTravel'),
+    url(r'(?i)jointravelbyid/', views.joinTravelByid, name='joinTravelByid'),
     # url(r'^getuser\w*/(?P<id>\d*)', views.getuserbyid, name='getuser'),
 ]

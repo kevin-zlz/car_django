@@ -114,3 +114,37 @@ def addTraval(request):
         else:
             return JsonResponse({"statuscode": "402"})
 
+# 查询所有活动
+def queryAllTravel(request):
+    if request.method == 'POST':
+        try:
+            travels=models.UserAriseTravel.objects.all().values()
+            travels=list(travels)
+
+            return JsonResponse(travels,safe=False)
+        except Exception as ex:
+            return JsonResponse({"statuscode": "401"})
+    else:
+        return JsonResponse({"statuscode": "402"})
+# 用户根据活动id参与活动
+def joinTravelByid(request):
+# 测试数据:
+    # data = {
+    #     "joiner_id": "46",
+    #     "joinTravel_id": "2",
+    # }
+    if request.method == 'POST':
+        try:
+            uu=json.loads(request.body)
+            data={
+                "joiner_id":uu['joiner_id'],
+                "joinTravel_id":uu['joinTravel_id'],
+                "jointime":datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            res=models.UserJoinTravel.objects.create(**data)
+            return JsonResponse({"statuscode": "808"})
+        except Exception as ex:
+            print(ex)
+            return JsonResponse({"statuscode": "401"})
+    else:
+        return JsonResponse({"statuscode": "402"})

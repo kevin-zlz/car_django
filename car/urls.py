@@ -28,11 +28,10 @@ urlpatterns = [
     url(r'addcity/', views.addcity, name='addcity'),
     url(r'addcitystore/', views.addcitystore, name='addcitystore'),
     url(r'addcardetail/', views.addcardetail, name='addcardetail'),
+    url(r'querycarinfobyid/', views.querycarinfobyid, name='querycarinfobyid'),
     url(r'querycardetailbyid/', views.querycardetailbyid, name='querycardetailbyid'),
     # url(r'querystrictname/', views.querystrictname, name='querystrictname'),
     url(r'querycarbystore/', views.querycarbystore, name='querycarbystore'),
-
-
     url(r'querycitystore/', views.querycitystore, name='querycitystore'),
     url(r'addcartostore/', views.addcartostore, name='addcartostore'),
     url(r'queryStoresbycity/', views.queryStoresbycity, name='queryStoresbycity'),
