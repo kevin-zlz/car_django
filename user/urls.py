@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'regist/', views.regist, name='regist'),
     url(r'addReturnCar/', views.addReturnCar, name='addReturnCar'),
     url(r'DicLoad/', views.DicLoad, name='DicLoad'),
+    url(r'fliename/', views.FlieName, name='FlieName'),
     url(r'uphead/', views.UpHead, name='UpHead'),
     url(r'addorder/', views.addorder, name='addorder'),
     url(r'queryOrder/', views.queryOrder, name='queryOrder'),

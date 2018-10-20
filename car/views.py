@@ -164,6 +164,30 @@ def querycarbystore(request):
 def querycarbyconditions(request):
     pass
 
+# 根据汽车id查询车辆基本及详情信息
+
+def querycarinfobyid(request):
+    # 测试数据:
+    #     {
+    #         "id":"6"
+    #     }
+    if request.method == 'POST':
+        try:
+            info={}
+            id = json.loads(request.body)['id']
+            base=models.CarBase.objects.filter(id=id).values()
+
+            detail = models.CarDetail.objects.filter(car_id=id).values()
+            base=list(base)[0]
+            detail = list(detail)[0]
+            info['base']=base
+            info['detail']=detail
+            return JsonResponse(info,safe=False)
+        except Exception as ex:
+            return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
+
 
 # 根据汽车id查询车辆详情
 def querycardetailbyid(request):

@@ -21,7 +21,6 @@ def jwtDecoding(token):
     #     }
     # else:
     #     return ''
-
     return decoded
 '''
 
