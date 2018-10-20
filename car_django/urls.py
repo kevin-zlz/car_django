@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url,include
 from . import views
-
+from django.views.static import serve
+from django.conf import settings
 #主路由
 urlpatterns = [
     url(r'admin/', admin.site.urls),
@@ -28,4 +29,5 @@ urlpatterns = [
     url(r'^car/', include('car.urls',namespace='car_django.car')),
     url(r'^travel/', include('traval.urls',namespace='car_django.traval')),
     url(r'^boke/', include('boke.urls',namespace='car_django.boke')),
+    url(r'media/(?P<path>.*)',serve,{'document_root':settings.MEDIA_ROOT})
 ]
