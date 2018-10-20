@@ -4,9 +4,8 @@ from datetime import datetime
 
 import json
 from . import models
-from utils.tokenHelper import jwtEncoding, jwtDecoding
+from utils.tokenHelper import *
 from werkzeug.security import generate_password_hash, check_password_hash
-
 
 # ------------------------------
 import uuid
@@ -306,7 +305,60 @@ def DicLoad(request):
             # 此处可以接收文件和字符串
             f1 = request.FILES['usericon']
             # 设置保存的文件名
-            fname = '%s/pic/%s' % (settings.STATICFILES_DIRS[0], f1.name)
+            name=str(uuid.uuid4())+"."+f1.name.split('.')[1]
+            print('1111',name)
+            fname = '%s/pic/%s' %(settings.STATICFILES_DIRS[0],name)
+            print(fname)
+            # 由于文件是二进制流的方式，所有要用chunks()
+            with open(fname, 'wb') as pic:
+                for c in f1.chunks():
+                    pic.write(c)
+            # 驾照背面
+            return JsonResponse({"name": name})
+        except Exception as ex:
+            print(ex)
+            return JsonResponse({"code": "407"})
+    else:
+        return JsonResponse({"code": "408"})
+
+# 获取驾驶证正反图名字
+def FlieName(request):
+    if request.method == 'POST':
+        # try:
+        token = request.META.get('HTTP_TOKEN')
+        print("=====================",token)
+        try:
+            tokenMsg = jwt.decode(str(token).encode(), SECRECT_KEY, audience='webkit', algorithms=['HS256'])
+            data = json.loads(request.body)
+            telephpne = tokenMsg['some']
+            Positive = data['Positive']
+            otherSide = data['otherSide']
+            data1 = {
+
+            }
+            # print('000000',telephpne)
+            # print(2222222, data['Positive'])
+            # print(3333333, data['otherSide'])
+            return JsonResponse({"code": "808"})
+        except Exception as ex:
+            print(ex)
+            return JsonResponse({"code": "409"})
+    else:
+        return JsonResponse({"code": "4010"})
+
+        # telphone = jwtDecoding(token.encode())['some']
+
+
+
+# 修改头像
+def UpHead(request):
+    if request.method == 'POST':
+        try:
+            # 此处可以接收文件和字符串
+            f1 = request.FILES['usericon']
+            # 设置保存的文件名
+            fname = '%s/pic/%s' %(settings.STATICFILES_DIRS[0],str(uuid.uuid4())+"."+f1.name.split('.')[1])
+            print(fname)
             # 由于文件是二进制流的方式，所有要用chunks()
             with open(fname, 'wb') as pic:
                 for c in f1.chunks():
@@ -319,25 +371,3 @@ def DicLoad(request):
             return JsonResponse({"code": "408"})
     else:
         return JsonResponse({"code": "408"})
-
-
-# 修改头像
-def UpHead(request):
-    if request.method == 'POST':
-        try:
-            # 此处可以接收文件和字符串
-            f1 = request.FILES['usericon']
-            # 设置保存的文件名
-            fname = '%s/pic/%s' % (settings.STATICFILES_DIRS[0], f1.name)
-            # 由于文件是二进制流的方式，所有要用chunks()
-            with open(fname, 'wb') as pic:
-                for c in f1.chunks():
-                    pic.write(c)
-            return JsonResponse({"code": "808"})
-        except Exception as ex:
-            print(ex)
-            return JsonResponse({"code": "408"})
-    else:
-        return JsonResponse({"code": "408"})
-
-
