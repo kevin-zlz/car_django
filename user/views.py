@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, response
-from datetime import datetime
 
 import json
 from . import models
-from utils.tokenHelper import jwtEncoding, jwtDecoding
+from utils.tokenHelper import *
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -43,7 +42,11 @@ def login(request):
 
 # 用户注册
 def regist(request):
+    print("-------------------")
     data = json.loads(request.body)
+    from datetime import datetime
+
+
     user = {
         "uname": data['uname'],
         "telephone": data['telephone'],
@@ -176,24 +179,29 @@ def updatepswbyid(request):
     #     "bef_password": "123456",
     #     "aft_password": "666666"
     # }
-    id= json.loads(request.body)['id']
-    bef_password= json.loads(request.body)['bef_password']
-    aft_password= json.loads(request.body)['aft_password']
     if request.method == 'POST':
-        try:
-            password_old = models.UserBase.objects.filter(id=id).values('password')
-            password_old=list(password_old)[0]['password']
+        # try:
+        bef_password = json.loads(request.body)['bef_password']
+        aft_password = json.loads(request.body)['aft_password']
+        token = request.META.get('HTTP_TOKEN')
+        print(token)
+        print("-----------------------------")
 
-            if bef_password==password_old:
-                res = models.UserBase.objects.filter(id=id).update(password=aft_password)
-
+        print(jwt.decode(token, SECRECT_KEY, audience='webkit', algorithms=['HS256']))
+        print("-----------------------------")
+        if jwtDecoding(token):
+            telphone = jwtDecoding(token)['some']
+            password_old = models.UserBase.objects.filter(telephone=telphone).values('password')[0]['password']
+            print(password_old)
+            if check_password_hash(password_old,bef_password):
+                res = models.UserBase.objects.filter(telephone=telphone).update(password=generate_password_hash(aft_password, method='pbkdf2:sha1:2000', salt_length=8))
                 return JsonResponse({"code": "808"})
             else:
-                JsonResponse({"code": "408"})
-
-            return JsonResponse({"code": "808"})
-        except Exception as ex:
-            return JsonResponse({"code": "408"})
+                JsonResponse({"code": "804"})
+        else:
+            JsonResponse({"code": "408"})
+        # except Exception as ex:
+        #     return JsonResponse({"code": "408"})
     else:
         return JsonResponse({"code": "408"})
 
@@ -244,6 +252,7 @@ def queryOrder(request):
                 telphone = jwtDecoding(token)['some']
                 uid = models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
                 uu = models.UserOrder.objects.filter(yonghu_id=uid).values('id', 'car__carname',
+                                                                           'car__carid',
                                                                            'takecarplace__detailaddress',
                                                                            'takecarplace__storeaddress__cityname',
                                                                            'takecarplace__storeaddress__strictname',
@@ -259,6 +268,31 @@ def queryOrder(request):
         except Exception as e:
             return JsonResponse({"msg": e})
 
+# 根据取还车时间以及完成取消的条件查询
+def queryOrderByCondithion(request):
+    if request.method == 'POST':
+        try:
+            token = request.META.get('HTTP_TOKEN')
+            if jwtDecoding(token):
+                telphone = jwtDecoding(token)['some']
+                data = json.loads(request.body)
+                uid = models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
+                uu = models.UserOrder.objects.filter(yonghu_id=uid,add_time__lte=data['endtime'],add_time__gte=data['starttime'],orderstate__statename=data['statename']).values('id', 'car__carname',
+                                                                           'car__carid',
+                                                                           'takecarplace__detailaddress',
+                                                                           'takecarplace__storeaddress__cityname',
+                                                                           'takecarplace__storeaddress__strictname',
+                                                                           'takecartime',
+                                                                           'returncarplace__returncar__storeaddress__cityname',
+                                                                           'returncarplace__returncar__storeaddress__strictname',
+                                                                           'returncarplace__returncar__detailaddress',
+                                                                           'returncartime', 'orderstate__statename',
+                                                                           'ordertype__typename', 'car__price')
+                return JsonResponse(list(uu), safe=False)
+            else:
+                return JsonResponse({"code": "408"})
+        except Exception as e:
+            return JsonResponse({"msg": e})
 
 # 用户下订单
 def addorder(request):

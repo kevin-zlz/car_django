@@ -60,5 +60,11 @@ class UserOrder(models.Model):
     orderstate=models.ForeignKey(to=OrderState,to_field='id',on_delete=models.CASCADE,default=1)
     ordertype=models.ForeignKey(to=OrderType,to_field='id',on_delete=models.CASCADE,default=1)
 
+# 用户驾驶证表
+class UserDriver(models.Model):
+    face = models.CharField(max_length=20)
+    back = models.CharField(max_length=20)
+    driver=models.ForeignKey(to='UserBase',to_field='id',on_delete=models.CASCADE,default=1)
+
 
 

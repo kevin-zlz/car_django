@@ -23,3 +23,8 @@ def jwtDecoding(token):
     #     return ''
 
     return decoded
+'''
+
+'''
+# token="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2JhcHAuY29tIiwiZXhwIjoxNTQwMDAwMjg0LCJhdWQiOiJ3ZWJraXQiLCJzb21lIjoiMTU3NzY1NTQ2MTIifQ.FoPQ-r78b9l91nAFPsBRJmy2J3OOFmiJZFLES4izQs4"
+# jwt.decode(token, SECRECT_KEY, audience='webkit', algorithms=['HS256'])
