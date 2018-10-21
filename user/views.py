@@ -19,9 +19,11 @@ def login(request):
         "telphone": data['telphone'],
         "password": generate_password_hash(data['password'], method='pbkdf2:sha1:2000', salt_length=8)
     }
+    print(user)
     if request.method == 'POST':
-        try:
+        # try:
             u = models.UserBase.objects.filter(telephone=user['telphone']).values('password')
+            print(u)
             print(u[0]['password'])
             print(data['password'])
 
@@ -34,8 +36,8 @@ def login(request):
                 return resp
             else:
                 return JsonResponse({"code": "404"})
-        except Exception as ex:
-            return JsonResponse({"code": "408"})
+        # except Exception as ex:
+        #     return JsonResponse({"code": "408"})
     else:
         return JsonResponse({"code": "408"})
 
@@ -103,6 +105,22 @@ def getuserbyid(request):
     else:
         return JsonResponse({"code": "408"})
 
+# 查询用户详细信息
+def queryuserdetail(request):
+
+    if request.method == 'POST':
+        # try:
+            token = request.META.get('HTTP_TOKEN')
+            decode = jwt.decode(token, SECRECT_KEY, audience='webkit', algorithms=['HS256'])
+            if decode:
+                telphone = decode['some']
+                uid = models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
+                user = models.UserDetail.objects.filter(yonghu__id=uid).values('realname','idcard','idcardtime','address','urgentname','urgenttel','yonghu__telephone','yonghu__email')
+                return JsonResponse(list(user),safe=False)
+        # except Exception as ex:
+        #     return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
 
 # 添加用户详细信息
 def adduserdetailbyid(request):
@@ -116,27 +134,45 @@ def adduserdetailbyid(request):
     #     "urgenttel":"13100886666",
     #     "yonghu_id":"1"
     #   }
+    from datetime import datetime
+
     if request.method=='POST':
-        try:
-            uu=json.loads(request.body)
 
+        # try:
+            token = request.META.get('HTTP_TOKEN')
+            decode = jwt.decode(token, SECRECT_KEY, audience='webkit', algorithms=['HS256'])
+            if decode:
 
-            user={
-                "realname":uu['realname'],
-                "idcard":uu['idcard'],
-                "idcardtime":datetime.strptime(uu['idcardtime'],'%Y-%m-%d'),
-                "address":uu['address'],
-                "urgentname":uu['urgentname'],
-                "urgenttel":uu['urgenttel'],
-                "add_time":datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                "yonghu_id":uu['yonghu_id']
-            }
-            res=models.UserDetail.objects.create(**user)
-            return JsonResponse({"code":"808"})
+                telphone = decode['some']
+                uu = json.loads(request.body, encoding='utf-8')
 
-        except Exception as ex:
-            print(ex)
-            return JsonResponse({"node":"408"})
+                uid=models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
+
+                user={
+                    "realname":uu['realname'],
+                    "idcard":uu['idcard'],
+                    # "telephone":int(uu['telephone']),
+                    "idcardtime":uu['idcardtime'],
+                    "address":uu['address'],
+                    "urgentname":uu['urgentname'],
+                    "urgenttel":uu['urgenttel'],
+                    "add_time":datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    "yonghu_id":models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id'],
+                    # "emile":uu["email"],
+                }
+                if len(models.UserDetail.objects.filter(yonghu__id=uid).values('id')):
+                    res1=models.UserBase.objects.filter(id=models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']).update(telephone=uu['telephone'],email=uu["email"])
+                    res=models.UserDetail.objects.filter(yonghu__id=uid).update(**user)
+                else:
+                    res1 = models.UserBase.objects.filter(
+                        id=models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']).update(
+                        telephone=uu['telephone'], email=uu["email"])
+                    res = models.UserDetail.objects.create(**user)
+                return JsonResponse({"code":"808"})
+
+        # except Exception as ex:
+        #     print(ex)
+        #     return JsonResponse({"node":"408"})
     else:
         return JsonResponse({"code":"404"})
 # 更新用户手机号码

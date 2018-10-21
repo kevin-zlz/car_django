@@ -27,7 +27,7 @@ urlpatterns = [
     #路由部分
     url(r'^user/', include('user.urls',namespace='car_django.user')),
     url(r'^car/', include('car.urls',namespace='car_django.car')),
-    url(r'^travel/', include('traval.urls',namespace='car_django.traval')),
+    url(r'^traval/', include('traval.urls',namespace='car_django.traval')),
     url(r'^boke/', include('boke.urls',namespace='car_django.boke')),
     url(r'media/(?P<path>.*)',serve,{'document_root':settings.MEDIA_ROOT})
 ]

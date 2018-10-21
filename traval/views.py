@@ -4,7 +4,7 @@ from django.http import HttpResponse,JsonResponse,response
 from datetime import datetime
 import json
 from . import models
-from utils.tokenHelper import jwtDecoding
+from utils.tokenHelper import *
 # 根据用户id查询用户参与的所有活动
 def queryTravelByuid(request):
     if request.method == 'POST':
@@ -91,21 +91,27 @@ def queryInitatorTravel(request):
 def addTraval(request):
     if request.method == 'POST':
         token = request.META.get('HTTP_TOKEN')
-        if jwtDecoding(token):
-            telphone = jwtDecoding(token)['some']
+        from datetime import datetime
+        decode=jwt.decode(token, SECRECT_KEY, audience='webkit', algorithms=['HS256'])
+        if decode:
+            telphone = decode['some']
+            print(telphone)
+            print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             uid = models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
             data = json.loads(request.body, encoding='utf-8')
+            print(data['linkname'])
             user = {
                 "initiator_id":uid,
-                "travelstartplace":"南京",
-                "travelstrattime":"2018-10-25 9:30:00",
-                "travelendtime":"2018-11-25 9:30:00",
-                "menbers":5,
-                "linkname":"王文成",
-                "linknumber":"15776540858",
-                "destribe":"无",
-                "pubtime":"2018-10-11"
+                "travelstartplace":data['travelstartplace'],
+                "travelstrattime":data['travelstrattime'],
+                "travelendtime":data['travelendtime'],
+                "menbers":data['menbers'],
+                "linkname":data['linkname'],
+                "linknumber":data['linknumber'],
+                "destribe":data['destribe'],
+                "pubtime":datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             }
+            print(user)
             try:
                 uu = models.UserAriseTravel.objects.create(**user)
                 return JsonResponse({"statuscode": "201"})

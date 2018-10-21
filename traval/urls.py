@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'queryNotJoinTravel/', views.queryNotJoinTravel, name='queryNotJoinTravel'),
     url(r'cancelNotJoinTravel/', views.cancelNotJoinTravel, name='cancelNotJoinTravel'),
     url(r'addTraval/', views.addTraval, name='addTraval'),
-    url(r'(?i)queryalltravel/', views.queryAllTravel, name='queryAllTravel'),
-    url(r'(?i)jointravelbyid/', views.joinTravelByid, name='joinTravelByid'),
+    url(r'queryalltravel/', views.queryAllTravel, name='queryAllTravel'),
+    url(r'jointravelbyid/', views.joinTravelByid, name='joinTravelByid'),
     # url(r'^getuser\w*/(?P<id>\d*)', views.getuserbyid, name='getuser'),
 ]

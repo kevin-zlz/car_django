@@ -33,5 +33,6 @@ urlpatterns = [
     url(r'^updatetelbyid/', views.updatetelbyid, name='updatetelbyid'),
     url(r'^updatepswbyid/', views.updatepswbyid, name='updatepswbyid'),
     url(r'^updateuserdetailbyid/', views.updateuserdetailbyid, name='updateuserdetailbyid'),
+    url(r'^queryuserdetail/', views.queryuserdetail, name='queryuserdetail'),
 
 ]
