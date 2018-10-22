@@ -124,30 +124,15 @@ def queryuserdetail(request):
 
 # 添加用户详细信息
 def adduserdetailbyid(request):
-# 测试数据:
-    #   {
-    #     "realname":"王俊垚",
-    #     "idcard":"232303199901010510",
-    #     "idcardtime":"2020-10-10",
-    #     "address":"苏州",
-    #     "urgentname":"王羲之",
-    #     "urgenttel":"13100886666",
-    #     "yonghu_id":"1"
-    #   }
     from datetime import datetime
-
     if request.method=='POST':
-
-        # try:
+        try:
             token = request.META.get('HTTP_TOKEN')
             decode = jwt.decode(token, SECRECT_KEY, audience='webkit', algorithms=['HS256'])
             if decode:
-
                 telphone = decode['some']
                 uu = json.loads(request.body, encoding='utf-8')
-
                 uid=models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
-
                 user={
                     "realname":uu['realname'],
                     "idcard":uu['idcard'],
@@ -169,10 +154,9 @@ def adduserdetailbyid(request):
                         telephone=uu['telephone'], email=uu["email"])
                     res = models.UserDetail.objects.create(**user)
                 return JsonResponse({"code":"808"})
-
-        # except Exception as ex:
-        #     print(ex)
-        #     return JsonResponse({"node":"408"})
+        except Exception as ex:
+            print(ex)
+            return JsonResponse({"node":"408"})
     else:
         return JsonResponse({"code":"404"})
 # 更新用户手机号码
@@ -296,7 +280,7 @@ def queryOrder(request):
                                                                            'returncarplace__returncar__storeaddress__strictname',
                                                                            'returncarplace__returncar__detailaddress',
                                                                            'returncartime', 'orderstate__statename',
-                                                                           'ordertype__typename', 'car__price')
+                                                                           'ordertype__typename', 'car__price','ordertype__id')
                 return JsonResponse(list(uu), safe=False)
             else:
                 return JsonResponse({"code": "408"})

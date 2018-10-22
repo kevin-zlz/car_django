@@ -4,7 +4,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, response
 import json
 from . import models
+from user.models import UserOrder
 import random
+from django.db.models import Q
 
 
 
@@ -58,15 +60,14 @@ def addcitystore(request):
 
 # 查询通过城市编号查询城市门店
 def querycitystore(request):
-    city = {
-        "cityname": "北京"
-    }
+
     if request.method == 'POST':
         try:
+            cityname = json.loads(request.body)['cityname']
             strictandstores = []
-            stricts = models.City.objects.filter(cityname=city['cityname']).values('strictname', 'id')
+            stricts = models.City.objects.filter(cityname=cityname).values('strictname', 'id')
             for strict in stricts:
-                stores = models.CityStore.objects.filter(id=strict['id']).values('storename', 'storetel',
+                stores = models.CityStore.objects.filter(storeaddress__id=strict['id']).values('storename', 'storetel',
                                                                                  'detailaddress', 'storetime')
                 storelist = []
                 for store in stores:
@@ -81,7 +82,7 @@ def querycitystore(request):
                     "stores": storelist
                 }
                 strictandstores.append(strictandstore)
-            # print(strictandstores)
+            print(strictandstores)
             return JsonResponse(strictandstores,safe=False)
             # return JsonResponse({"code": "808"})
         except Exception as ex:
@@ -150,17 +151,37 @@ def addcardetail(request):
         print(ex)
         return JsonResponse({"code":"408"})
 
-
-
-
-
 # 查询门店下面的可用汽车
 def querycarbystore(request):
-    pass
+    from  datetime import datetime
+    if request.method == 'POST':
+        # try:
+            condition = json.loads(request.body)
+            print(condition)
+            takestoreid=models.CityStore.objects.filter(storename=condition['takestore'],storeaddress__cityname=condition['takecityname']).values('id')[0]['id']
+            backstoreid=models.CityStore.objects.filter(storename=condition['backstore'],storeaddress__cityname=condition['backcityname']).values('id')[0]['id']
+            print(takestoreid,backstoreid)
+        # Q(takecartime__gt=datetime.strptime(condition['backtime'],'%Y-%m-%d %H:%M:%S'))
+        #     print(condition['backtime'])
+        #     print(type(condition['backtime']))
+        #     str1 = '2018-10-19'
 
+            # 订单中不可用车辆
+            order=UserOrder.objects.all().exclude(Q(returncartime__gte=datetime.strptime(condition['backtime'],'%Y-%m-%d %H:%M:%S'))|Q(takecartime__gt=datetime.strptime(condition['backtime'],'%Y-%m-%d %H:%M:%S'))).values('id','takecartime','returncartime','car__id')
+            caridlist=[]
+            for o in order:
+                caridlist.append(o['car__id'])
+            print(caridlist)
+            cars=models.CarBase.objects.exclude(id__in=caridlist).filter(storeid=takestoreid).values()
+
+            # return -0JsonResponse(strictandstores,safe=False)
+            return JsonResponse(list(cars),safe=False)
+        # except Exception as ex:
+        #     return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
 
 # 多条件查询汽车基本信息
-
 def querycarbyconditions(request):
     pass
 
@@ -176,7 +197,6 @@ def querycarinfobyid(request):
             info={}
             id = json.loads(request.body)['id']
             base=models.CarBase.objects.filter(id=id).values()
-
             detail = models.CarDetail.objects.filter(car_id=id).values()
             base=list(base)[0]
             detail = list(detail)[0]
