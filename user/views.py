@@ -360,9 +360,9 @@ def DicLoad(request):
             f1 = request.FILES['usericon']
             # 设置保存的文件名
             name=str(uuid.uuid4())+"."+f1.name.split('.')[1]
-            print('1111',name)
+            # print('1111',name)
             fname = '%s/pic/%s' %(settings.STATICFILES_DIRS[0],name)
-            print(fname)
+            # print(fname)
             # 由于文件是二进制流的方式，所有要用chunks()
             with open(fname, 'wb') as pic:
                 for c in f1.chunks():
@@ -380,19 +380,24 @@ def FlieName(request):
     if request.method == 'POST':
         # try:
         token = request.META.get('HTTP_TOKEN')
-        print("=====================",token)
+        # print("=====================",token)
         try:
             tokenMsg = jwt.decode(str(token).encode(), SECRECT_KEY, audience='webkit', algorithms=['HS256'])
             data = json.loads(request.body)
             telephpne = tokenMsg['some']
             Positive = data['Positive']
             otherSide = data['otherSide']
+            id1 = models.UserBase.objects.filter(telephone=telephpne).values('id')
+            id = list(id1)[0]['id']
             data1 = {
-
+                "face":Positive,
+                "back":otherSide,
+                "driver_id":id
             }
-            # print('000000',telephpne)
-            # print(2222222, data['Positive'])
-            # print(3333333, data['otherSide'])
+            res = models.UserDriver.objects.create(**data1)
+            # print('000000',id)
+            # print(2222222,Positive)
+            # print(3333333, otherSide)
             return JsonResponse({"code": "808"})
         except Exception as ex:
             print(ex)
@@ -407,18 +412,24 @@ def FlieName(request):
 # 修改头像
 def UpHead(request):
     if request.method == 'POST':
+        token = request.META.get('HTTP_TOKEN')
         try:
+            tokenMsg = jwt.decode(str(token).encode(), SECRECT_KEY, audience='webkit', algorithms=['HS256'])
+            telephpne = tokenMsg['some']
             # 此处可以接收文件和字符串
             f1 = request.FILES['usericon']
             # 设置保存的文件名
-            fname = '%s/pic/%s' %(settings.STATICFILES_DIRS[0],str(uuid.uuid4())+"."+f1.name.split('.')[1])
-            print(fname)
+            name = str(uuid.uuid4())+"."+f1.name.split('.')[1]
+            fname = '%s/pic/%s' %(settings.STATICFILES_DIRS[0],name)
+            # print(fname)
             # 由于文件是二进制流的方式，所有要用chunks()
             with open(fname, 'wb') as pic:
                 for c in f1.chunks():
                     pic.write(c)
-            # 驾照背面
-
+            res1 = models.UserIcon.objects.create(iconurl=name)
+            id1 = models.UserIcon.objects.filter(iconurl=name).values('id')
+            id = list(id1)[0]['id']
+            res = models.UserBase.objects.filter(telephone=telephpne).update(icon_id=id)
             return JsonResponse({"code": "808"})
         except Exception as ex:
             print(ex)
