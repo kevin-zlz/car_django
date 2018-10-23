@@ -62,7 +62,7 @@ def addcitystore(request):
 def querycitystore(request):
 
     if request.method == 'POST':
-        try:
+        # try:
             cityname = json.loads(request.body)['cityname']
             strictandstores = []
             stricts = models.City.objects.filter(cityname=cityname).values('strictname', 'id')
@@ -85,11 +85,11 @@ def querycitystore(request):
             print(strictandstores)
             return JsonResponse(strictandstores,safe=False)
             # return JsonResponse({"code": "808"})
-        except Exception as ex:
-            return JsonResponse({"code": "408"})
+        # except Exception as ex:
+        #     return JsonResponse({"code": "408"})
     else:
         return JsonResponse({"code": "408"})
-    pass
+    # pass
 
 
 # 添加门店下的车辆
@@ -159,8 +159,8 @@ def querycarbystore(request):
             condition = json.loads(request.body)
             print(condition)
             takestoreid=models.CityStore.objects.filter(storename=condition['takestore'],storeaddress__cityname=condition['takecityname']).values('id')[0]['id']
-            backstoreid=models.CityStore.objects.filter(storename=condition['backstore'],storeaddress__cityname=condition['backcityname']).values('id')[0]['id']
-            print(takestoreid,backstoreid)
+            # backstoreid=models.CityStore.objects.filter(storename=condition['backstore'],storeaddress__cityname=condition['backcityname']).values('id')[0]['id']
+            # print(takestoreid,backstoreid)
         # Q(takecartime__gt=datetime.strptime(condition['backtime'],'%Y-%m-%d %H:%M:%S'))
         #     print(condition['backtime'])
         #     print(type(condition['backtime']))
@@ -173,7 +173,7 @@ def querycarbystore(request):
                 caridlist.append(o['car__id'])
             print(caridlist)
             cars=models.CarBase.objects.exclude(id__in=caridlist).filter(storeid=takestoreid).values()
-
+            print(cars)
             # return -0JsonResponse(strictandstores,safe=False)
             return JsonResponse(list(cars),safe=False)
         # except Exception as ex:
@@ -183,7 +183,52 @@ def querycarbystore(request):
 
 # 多条件查询汽车基本信息
 def querycarbyconditions(request):
-    pass
+    from datetime import datetime
+    if request.method == 'POST':
+        # try:
+        condition = json.loads(request.body)
+        print(condition)
+        takestoreid = models.CityStore.objects.filter(storename=condition['condition']['takestore'],
+                                                      storeaddress__cityname=condition['condition']['takecityname']).values('id')[0][
+            'id']
+        backstoreid=models.CityStore.objects.filter(storename=condition['condition']['backstore'],storeaddress__cityname=condition['condition']['backcityname']).values('id')[0]['id']
+        print(takestoreid,backstoreid)
+        # Q(takecartime__gt=datetime.strptime(condition['backtime'],'%Y-%m-%d %H:%M:%S'))
+        #     print(condition['backtime'])
+        #     print(type(condition['backtime']))
+        #     str1 = '2018-10-19'
+
+        # 订单中不可用车辆
+        order = UserOrder.objects.all().exclude(
+            Q(returncartime__gte=datetime.strptime(condition['condition']['taketime'], '%Y-%m-%d %H:%M:%S')) | Q(
+                takecartime__gt=datetime.strptime(condition['condition']['backtime'], '%Y-%m-%d %H:%M:%S'))).values('id',
+                                                                                                       'takecartime',
+
+                                                                                                       'returncartime',
+                                                                                                       'car__id')
+        print(order)
+        caridlist = []
+        for o in order:
+            caridlist.append(o['car__id'])
+        con = {}
+        if condition['condition']['condition']['carPingpai']:
+            con['brand__in']=condition['condition']['condition']['carPingpai']
+        if condition['condition']['condition']['carLeixing']:
+            con['cartype__in']=condition['condition']['condition']['carLeixing']
+        if condition['condition']['condition']['carJiage']:
+            con['price__lte']=int(condition['condition']['condition']['carJiage'])
+
+        # print(caridlist,condition['condition']['carPingpai'],condition['condition']['carLeixing'],int(condition['condition']['carJiage']))
+        # cars = models.CarBase.objects.exclude(id__in=caridlist).filter(storeid=takestoreid).filter(brand__in=condition['condition']['condition']['carPingpai'],cartype__in=condition['condition']['condition']['carLeixing'],price__lte=int(condition['condition']['condition']['carJiage'])).values()
+        cars = models.CarBase.objects.exclude(id__in=caridlist).filter(**con).values()
+        print(cars)
+        # return -0JsonResponse(strictandstores,safe=False)
+        return JsonResponse(list(cars), safe=False)
+    # except Exception as ex:
+    #     return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
+
 
 # 根据汽车id查询车辆基本及详情信息
 

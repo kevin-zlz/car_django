@@ -4,7 +4,7 @@ import json
 # Create your models here.
 # 用户头像
 class UserIcon(models.Model):
-    iconurl=models.CharField(max_length=30)
+    iconurl=models.CharField(max_length=50)
 
 # 用户基本信息
 class UserBase(models.Model):
@@ -62,8 +62,8 @@ class UserOrder(models.Model):
 
 # 用户驾驶证表
 class UserDriver(models.Model):
-    face = models.CharField(max_length=20)
-    back = models.CharField(max_length=20)
+    face = models.CharField(max_length=50)
+    back = models.CharField(max_length=50)
     driver=models.ForeignKey(to='UserBase',to_field='id',on_delete=models.CASCADE,default=1)
 
 

@@ -38,4 +38,6 @@ urlpatterns = [
     url(r'addLike/', views.addLike, name='addLike'),
     url(r'deletelike/', views.deletelike, name='deletelike'),
     url(r'deteleCommentByCid/', views.deteleCommentByCid, name='deteleCommentByCid'),
+    url(r'deleteArticalByaid/', views.deleteArticalByaid, name='deleteArticalByaid'),
+    url(r'deletelikebysid/', views.deletelikebysid, name='deletelikebysid'),
 ]
