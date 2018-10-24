@@ -66,5 +66,11 @@ class UserDriver(models.Model):
     back = models.CharField(max_length=50)
     driver=models.ForeignKey(to='UserBase',to_field='id',on_delete=models.CASCADE,default=1)
 
+class HistoryIcon(models.Model):
+    user=models.ForeignKey(to='UserBase',to_field='id',on_delete=models.CASCADE,default=1)
+    iconname=models.CharField(max_length=50)
+    add=models.DateTimeField(auto_now_add=True)
+
+
 
 

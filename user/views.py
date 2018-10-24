@@ -26,7 +26,6 @@ def login(request):
             print(u)
             print(u[0]['password'])
             print(data['password'])
-
             if u and check_password_hash(u[0]['password'], data['password']):
                 result = {"code": "808"}
                 resp = response.HttpResponse(json.dumps(result), status=200, charset='utf-8',
@@ -260,8 +259,6 @@ def updateuserdetailbyid(request):
         return JsonResponse({"code": "408"})
 
 
-
-
 # 用户根据id查询所有订单
 def queryOrder(request):
     if request.method == 'POST':
@@ -315,21 +312,24 @@ def queryOrderByCondithion(request):
 
 # 用户下订单
 def addorder(request):
+    from datetime import datetime
     if request.method == 'POST':
         try:
             token = request.META.get('HTTP_TOKEN')
+            data = json.loads(request.body)
+            print(data)
             if jwtDecoding(token):
                 telphone = jwtDecoding(token)['some']
                 uid = models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
                 order = {
                     "yonghu_id": uid,
-                    "car_id": 1,
-                    "takecarplace_id": 2,
-                    "takecartime": datetime.strptime('2018-10-16 10:00:00', '%Y-%m-%d %H:%M:%S'),
-                    "returncarplace_id": models.ReturnCar.objects.filter(returncar__id=3).values('id')[0]['id'],
-                    "returncartime": datetime.strptime('2018-10-18 16:00:00', '%Y-%m-%d %H:%M:%S'),
-                    "orderstate_id": 1,
-                    "ordertype_id": 1
+                    "car_id": data['carid'],
+                    "takecarplace_id": data['takestoreid'],
+                    "takecartime": datetime.strptime(data['taketime'], '%Y-%m-%d %H:%M:%S'),
+                    "returncarplace_id": models.ReturnCar.objects.filter(returncar__id=data['backstoreid']).values('id')[0]['id'],
+                    "returncartime": datetime.strptime(data['backtime'], '%Y-%m-%d %H:%M:%S'),
+                    "orderstate_id": int(data['orderstate']),
+                    "ordertype_id": int(data['ordertype']),
                 }
                 uu = models.UserOrder.objects.create(**order)
                 print(uu)
