@@ -420,6 +420,7 @@ def UpHead(request):
             f1 = request.FILES['usericon']
             # 设置保存的文件名
             name = str(uuid.uuid4())+"."+f1.name.split('.')[1]
+            print(name)
             fname = '%s/pic/%s' %(settings.STATICFILES_DIRS[0],name)
             # print(fname)
             # 由于文件是二进制流的方式，所有要用chunks()
@@ -430,9 +431,29 @@ def UpHead(request):
             id1 = models.UserIcon.objects.filter(iconurl=name).values('id')
             id = list(id1)[0]['id']
             res = models.UserBase.objects.filter(telephone=telephpne).update(icon_id=id)
-            return JsonResponse({"code": "808"})
+            return JsonResponse({"code": 0,"name":name})
         except Exception as ex:
             print(ex)
             return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
+
+
+#  获取用户头像
+def GetHead(request):
+    if request.method == 'POST':
+        token = request.META.get('HTTP_TOKEN')
+        print(token)
+        # try:
+        tokenMsg = jwt.decode(token.encode('utf-8'), SECRECT_KEY, audience='webkit', algorithms=['HS256'])
+        telephpne = tokenMsg['some']
+
+        url1 = models.UserBase.objects.filter(telephone=telephpne).values('icon__iconurl')
+        url = list(url1)[0]['icon__iconurl']
+        print(url)
+        return JsonResponse({"code": 0,"url":url})
+        # except Exception as ex:
+        #     print(ex)
+        #     return JsonResponse({"code": "408"})
     else:
         return JsonResponse({"code": "408"})

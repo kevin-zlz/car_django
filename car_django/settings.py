@@ -62,7 +62,8 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'localhost:63343',
     'localhost:63342',
-    'localhost:8080'
+    'localhost:8080',
+    'localhost:8081',
 )
 
 CORS_ALLOW_METHODS = (
@@ -161,9 +162,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
 
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "media"),
 )
