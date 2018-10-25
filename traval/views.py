@@ -247,4 +247,22 @@ def joinTravelByid(request):
 
 # 根据活动id删除用户活动
 def deleteTravelByid(request):
-    pass
+    from datetime import datetime
+    if request.method == 'POST':
+        try:
+            token = request.META.get('HTTP_TOKEN')
+            decode = jwt.decode(token, SECRECT_KEY, audience='webkit', algorithms=['HS256'])
+            if decode:
+                telphone = decode['some']
+                uid = models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
+                uu = json.loads(request.body)
+
+                res1 = models.UserJoinTravel.objects.filter(joinTravel__id=uu['travelid']).delete()
+                res2=models.TravelPlace.objects.filter(places__id=uu['travelid']).delete()
+                res3=models.UserAriseTravel.objects.filter(id=uu['travelid']).delete()
+                return JsonResponse({"statuscode": "808"})
+        except Exception as ex:
+            print(ex)
+            return JsonResponse({"statuscode": "401"})
+    else:
+        return JsonResponse({"statuscode": "402"})
