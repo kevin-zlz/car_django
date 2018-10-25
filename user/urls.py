@@ -39,5 +39,6 @@ urlpatterns = [
     url(r'^updatepswbyid/', views.updatepswbyid, name='updatepswbyid'),
     url(r'^updateuserdetailbyid/', views.updateuserdetailbyid, name='updateuserdetailbyid'),
     url(r'^queryuserdetail/', views.queryuserdetail, name='queryuserdetail'),
+    url(r'^queryOrderByCondithion/', views.queryOrderByCondithion, name='queryOrderByCondithion'),
 
 ]

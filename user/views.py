@@ -301,6 +301,10 @@ def queryOrder(request):
             if jwtDecoding(token):
                 telphone = jwtDecoding(token)['some']
                 uid = models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
+                index = data['currentPage']
+                pageCount = data['pageCount']
+                start = (index - 1) * pageCount
+                end = index * pageCount - 1
                 uu = models.UserOrder.objects.filter(yonghu_id=uid).values('id', 'car__carname',
                                                                            'car__carid',
                                                                            'takecarplace__detailaddress',
@@ -311,7 +315,7 @@ def queryOrder(request):
                                                                            'returncarplace__returncar__storeaddress__strictname',
                                                                            'returncarplace__returncar__detailaddress',
                                                                            'returncartime', 'orderstate__statename',
-                                                                           'ordertype__typename', 'car__price','ordertype__id')
+                                                                           'ordertype__typename', 'car__price','ordertype__id')[start:end]
                 return JsonResponse(list(uu), safe=False)
             else:
                 return JsonResponse({"code": "408"})
@@ -327,7 +331,20 @@ def queryOrderByCondithion(request):
                 telphone = jwtDecoding(token)['some']
                 data = json.loads(request.body)
                 uid = models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
-                uu = models.UserOrder.objects.filter(yonghu_id=uid,add_time__lte=data['endtime'],add_time__gte=data['starttime'],orderstate__statename=data['statename']).values('id', 'car__carname',
+                condition={}
+                condition['yonghu_id']=uid
+                if data['fromtime'] and data['endtime']:
+                    condition['add_time__lte']=data['endtime']
+                    condition['add_time__gte']=data['fromtime']
+                if data['statename']:
+                    condition['orderstate__statename']=data['statename']
+
+                index = data['currentPage']
+                pageCount = data['pageCount']
+                start = (index - 1) * pageCount
+                end = index * pageCount
+                print(start,end)
+                uu = models.UserOrder.objects.filter(**condition).values('id', 'car__carname',
                                                                            'car__carid',
                                                                            'takecarplace__detailaddress',
                                                                            'takecarplace__storeaddress__cityname',
@@ -337,7 +354,8 @@ def queryOrderByCondithion(request):
                                                                            'returncarplace__returncar__storeaddress__strictname',
                                                                            'returncarplace__returncar__detailaddress',
                                                                            'returncartime', 'orderstate__statename',
-                                                                           'ordertype__typename', 'car__price')
+                                                                           'ordertype__typename', 'car__price',
+                                                                           'ordertype__id')[start:end]
                 return JsonResponse(list(uu), safe=False)
             else:
                 return JsonResponse({"code": "408"})
