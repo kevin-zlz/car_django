@@ -36,7 +36,7 @@ def queryAllAritical(request):
     if request.method == 'POST':
         # try:
 
-                data=models.Aritical.objects.all().values('id','content','type__typename','pubtime','yonghu__uname')
+                data=models.Aritical.objects.all().order_by('-pubtime').values('id','content','type__typename','pubtime','yonghu__uname','yonghu__icon_id__iconurl')
                 for i in range(len(data)):
                     data[i]["pubtime"]=datetime.datetime.strftime(data[i]["pubtime"],'%Y-%m-%d %H:%M:%S')
                     data[i]['starnum']=len(models.ArticalStart.objects.filter(artical__id=data[i]['id']).annotate(Count('id')).values('id'))
@@ -60,7 +60,7 @@ def queryAriticalByaid(request):
         # try:
                 data = json.loads(request.body, encoding='utf-8')
                 aid = data['aid']
-                data=models.Aritical.objects.filter(id=aid).values('id','content','type__typename','pubtime','yonghu__uname')
+                data=models.Aritical.objects.filter(id=aid).values('id','content','type__typename','pubtime','yonghu__uname','yonghu__icon_id__iconurl')
                 for i in range(len(data)):
                     data[i]["pubtime"]=datetime.datetime.strftime(data[i]["pubtime"],'%Y-%m-%d %H:%M:%S')
                     data[i]['starnum']=len(models.ArticalStart.objects.filter(artical__id=data[i]['id']).annotate(Count('id')).values('id'))
@@ -131,7 +131,7 @@ def queryCommentbyaid(request):
         try:
             data=json.loads(request.body,encoding='utf-8')
             aid=data['aid']
-            data=models.ArticalComment.objects.filter(artical__id=aid).values('id','content','pubtime','commener__uname','commener__telephone')
+            data=models.ArticalComment.objects.filter(artical__id=aid).values('id','content','pubtime','commener__uname','commener__telephone','commener__icon_id__iconurl')
             for item in data:
                 item["pubtime"]=datetime.datetime.strftime(item["pubtime"],'%Y-%m-%d %H:%M:%S')
             print(str(list(data)))
@@ -174,6 +174,7 @@ def addAritical(request):
                 telphone=jwtDecoding(token)['some']
                 data=json.loads(request.body,encoding='utf-8')
                 article={
+                    "title":data['title'],
                     "content":data["content"],
                     "type_id":models.AriticalType.objects.filter(typename=data['ariticaltype']).values('id')[0]['id'],
                     "yonghu_id":models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']

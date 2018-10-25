@@ -267,6 +267,7 @@ def queryOrder(request):
             if jwtDecoding(token):
                 telphone = jwtDecoding(token)['some']
                 uid = models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
+                data = json.loads(request.body)
                 index = data['currentPage']
                 pageCount = data['pageCount']
                 start = (index - 1) * pageCount
@@ -350,7 +351,8 @@ def addorder(request):
                     "ordertype_id": int(data['ordertype']),
                 }
                 uu = models.UserOrder.objects.create(**order)
-                print(uu)
+                # 修改车的所属门店
+                dd= models.CarBase.objects.filter(id=data['carid']).update(storeid__id=data['backstoreid'])
                 return JsonResponse({"code": "208"})
             else:
                 return JsonResponse({"code": "408"})

@@ -242,7 +242,6 @@ def querycarbyconditions(request):
 
 
 # 根据汽车id查询车辆基本及详情信息
-
 def querycarinfobyid(request):
     # 测试数据:
     #     {
