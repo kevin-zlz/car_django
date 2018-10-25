@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'DicLoad/', views.DicLoad, name='DicLoad'),
     url(r'fliename/', views.FlieName, name='FlieName'),
     url(r'uphead/', views.UpHead, name='UpHead'),
+    url(r'gethead/', views.GetHead, name='GetHead'),
     url(r'addorder/', views.addorder, name='addorder'),
     url(r'queryOrder/', views.queryOrder, name='queryOrder'),
     url(r'^getuserbyid/', views.getuserbyid, name='getuserbyid'),

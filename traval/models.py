@@ -7,12 +7,23 @@ import json
 # Create your models here.
 from datetime import datetime
 
+
+
+# 旅游图像表
+class CityIcon(models.Model):
+    cityname=models.CharField(max_length=20,default='')
+    iconurl=models.CharField(max_length=50,default='')
+    # addressurl=models.CharField(max_length=50,default='')
+
+
 # 旅游发起表
 class UserAriseTravel(models.Model):
     # 发起人
     initiator=models.ForeignKey(to=UserBase,to_field='id',on_delete=models.CASCADE,default=1)
     # 出发地点
     travelstartplace=models.CharField(max_length=50,null=True)
+    # 旅游城市
+    city=models.ForeignKey(to=CityIcon,to_field='id',on_delete=models.CASCADE,null=True)
     # 出发时间
     travelstrattime=models.DateTimeField()
     # 活动结束时间
@@ -32,6 +43,8 @@ class UserAriseTravel(models.Model):
 class TravelPlace(models.Model):
     places = models.ForeignKey(to=UserAriseTravel, to_field='id', on_delete=models.CASCADE, default=1)
     address= models.CharField(max_length=50,default='')
+    # addressurl=models.CharField(max_length=50,default='')
+
 
 
 # 旅游参与表

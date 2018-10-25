@@ -14,6 +14,7 @@ class AriticalType(models.Model):
 class Aritical(models.Model):
     yonghu=models.ForeignKey(to=UserBase,to_field='id',on_delete=models.CASCADE,default=1)
     # 内容
+    title=models.CharField(max_length=100,default='这是文章标题')
     content=models.TextField(max_length=500)
     # 发表时间
     pubtime=models.DateTimeField(auto_now_add=True)

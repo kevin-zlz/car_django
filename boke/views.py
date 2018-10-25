@@ -83,7 +83,7 @@ def queryLikebyuid(request):
             if jwtDecoding(token):
                 telphone=jwtDecoding(token)['some']
                 uid=models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
-                data=models.ArticalStart.objects.filter(liker__id=uid).values('artical__id','artical__content','pubtime','liker__uname')
+                data=models.ArticalStart.objects.filter(liker__id=uid).values('id','artical__id','artical__content','pubtime','liker__uname','artical__yonghu__uname')
                 for i in range(len(data)):
                     data[i]["pubtime"]=datetime.datetime.strftime(data[i]["pubtime"],'%Y-%m-%d %H:%M:%S')
                     data[i]['starnum']=len(models.ArticalStart.objects.filter(artical__id=1).values('id'))
@@ -108,7 +108,7 @@ def queryCommentbyuid(request):
             if jwtDecoding(token):
                 telphone=jwtDecoding(token)['some']
                 uid=models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
-                data=models.ArticalComment.objects.filter(commener__id=uid).values('artical__id','artical__content','pubtime','commener__uname')
+                data=models.ArticalComment.objects.filter(commener__id=uid).values('id','artical__id','artical__content','pubtime','commener__uname','content','artical__yonghu__uname')
                 for i in range(len(data)):
                     data[i]["pubtime"]=datetime.datetime.strftime(data[i]["pubtime"],'%Y-%m-%d %H:%M:%S')
                     data[i]['starnum'] = len(models.ArticalStart.objects.filter(artical__id=1).values('id'))
@@ -265,13 +265,17 @@ def deletelike(request):
 def deteleCommentByCid(request):
     if request.method == 'POST':
         try:
-            data=json.loads(request.body,encoding='utf-8')
-            cid=data['cid']
-            data=models.ArticalComment.objects.get(id=cid).delete()
-            if data:
-                return JsonResponse({"code":"208"})
-            else:
-                return JsonResponse({"code": "408"})
+            token = request.META.get('HTTP_TOKEN')
+            if jwtDecoding(token):
+                telphone = jwtDecoding(token)['some']
+                data=json.loads(request.body,encoding='utf-8')
+                cid=data['cid']
+                print(cid)
+                data=models.ArticalComment.objects.get(id=cid).delete()
+                if data:
+                    return JsonResponse({"code":"208"})
+                else:
+                    return JsonResponse({"code": "408"})
 
         except Exception as ex:
             return JsonResponse({"code": "408"})
@@ -289,5 +293,47 @@ def queryArticlaType(request):
                     return JsonResponse({"code": "408"})
         except Exception as ex:
             return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
+
+
+# 删除文章及其评论点赞根据文章id
+def deleteArticalByaid(request):
+    if request.method == 'POST':
+        try:
+            token=request.META.get('HTTP_TOKEN')
+            if jwtDecoding(token):
+                telphone=jwtDecoding(token)['some']
+                data = json.loads(request.body, encoding='utf-8')
+                aid = data['aid']
+                like= models.ArticalStart.objects.filter(artical__id=aid).delete()
+                comment = models.ArticalComment.objects.filter(artical__id=aid).delete()
+                art = models.Aritical.objects.filter(id=aid).delete()
+                if art:
+                    return JsonResponse({"code": "208"})
+                else:
+                    return JsonResponse({"code": "408"})
+        except Exception as ex:
+            return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
+
+# 根据点赞id取消点赞
+def deletelikebysid(request):
+    if request.method == 'POST':
+        # try:
+            token = request.META.get('HTTP_TOKEN')
+            if jwtDecoding(token):
+                telphone = jwtDecoding(token)['some']
+                data=json.loads(request.body,encoding='utf-8')
+                sid=data['sid']
+                data=models.ArticalStart.objects.get(id=sid).delete()
+                if data:
+                    return JsonResponse({"code":"208"})
+                else:
+                    return JsonResponse({"code": "408"})
+
+        # except Exception as ex:
+        #     return JsonResponse({"code": "408"})
     else:
         return JsonResponse({"code": "408"})

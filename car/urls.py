@@ -32,9 +32,10 @@ urlpatterns = [
     url(r'querycardetailbyid/', views.querycardetailbyid, name='querycardetailbyid'),
     # url(r'querystrictname/', views.querystrictname, name='querystrictname'),
     url(r'querycarbystore/', views.querycarbystore, name='querycarbystore'),
+    url(r'querycarbyconditions/', views.querycarbyconditions, name='querycarbyconditions'),
     url(r'querycitystore/', views.querycitystore, name='querycitystore'),
     url(r'addcartostore/', views.addcartostore, name='addcartostore'),
     url(r'queryStoresbycity/', views.queryStoresbycity, name='queryStoresbycity'),
-    # url(r'^car/', include('car.urls',namespace='django_jobapp.job')),
+
 
 ]
