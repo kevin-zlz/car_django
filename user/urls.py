@@ -40,5 +40,7 @@ urlpatterns = [
     url(r'^updateuserdetailbyid/', views.updateuserdetailbyid, name='updateuserdetailbyid'),
     url(r'^queryuserdetail/', views.queryuserdetail, name='queryuserdetail'),
     url(r'^queryOrderByCondithion/', views.queryOrderByCondithion, name='queryOrderByCondithion'),
+    url(r'^orderdetail/', views.orderdetail, name='orderdetail'),
+    url(r'^paymoney/', views.paymoney, name='paymoney'),
 
 ]
