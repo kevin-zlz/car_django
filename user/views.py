@@ -7,6 +7,11 @@ from utils.tokenHelper import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from car.models import CarDetail
 
+# 产生随机数
+import random
+import time
+from .miaodi import *
+from django.db import connection
 # ------------------------------
 import uuid
 import car_django.settings as settings
@@ -38,6 +43,36 @@ def login(request):
                 return JsonResponse({"code": "404"})
         # except Exception as ex:
         #     return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
+
+# 短信登陆
+def Information(request):
+    if request.method == "POST":
+        now_dates = time.time()
+        print(request.body)
+        mobble = json.loads(request.body)
+        mobbl = mobble['telephone']
+        yecode = int(mobble["code"])
+        print(yecode)
+        try:
+            cursor = connection.cursor()
+            sql = "select * from securty WHERE telephone = {0}".format(mobbl)
+            bb = cursor.execute(sql)
+            res = cursor.fetchone()
+            print(res)
+            if (res[1] == yecode) and (float(res[2]) >= now_dates):
+                sql = "UPDATE securty set state = 2 WHERE telephone = {0}".format(mobbl)
+                bb = cursor.execute(sql)
+                result = {"code": 0}
+                resp = response.HttpResponse(json.dumps(result), status=200, charset='utf-8',content_type='application/json')
+                resp['token'] = jwtEncoding(mobbl)
+                resp['Access-Control-Expose-Headers'] = 'token'
+                return resp
+            else:
+                return JsonResponse({"code": "408"})
+        except Exception as ex:
+            print(ex)
     else:
         return JsonResponse({"code": "408"})
 
@@ -515,5 +550,107 @@ def GetHead(request):
         # except Exception as ex:
         #     print(ex)
         #     return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
+
+
+
+# 短信验证获取验证码-----------------------------
+
+def SendCode(request):
+    '''
+    :param          mobile
+    :return:        (1): code:412       手机号码输入不正确，或者已被注册
+                    (2): code:200       发送短信成功
+    '''
+
+
+    # print(now_date + 60)
+    #
+    # timeArray = time.localtime(now_date)
+    #
+    # otherStyleTime = time.strftime("%Y--%m--%d %H:%M:%S", timeArray)
+    #
+    # print(otherStyleTime)
+
+    if request.method == "POST":
+
+        mobble = json.loads(request.body)
+        mobble=int(mobble['telephone'])
+        print(mobble)#验证表单
+        # if form.validate():
+        #
+        code=random.randrange(1000,9999)
+        code=str(code)
+        print(code)
+        smsContent='【长安租车】您的验证码为{0}，请于{1}分钟内正确输入，如非本人操作，请忽略此短信。'.format(code,2)
+        sendIndustrySms(mobble,smsContent)
+        # sendIndustrySms(mobble,smsContent)
+        # #将获取到的验证码存储到数据库中
+        now_date = time.time() + 120;
+        cursor = connection.cursor()
+        sql = "DELETE from securty WHERE telephone = {0}".format(mobble)
+        n = cursor.execute(sql)
+        sql = "insert into securty() VALUE({0},{1},{2},{3})".format(mobble,code,now_date,1)
+        bb = cursor.execute(sql)
+        return JsonResponse({'code': 200, 'message': '发送成功'})
+        # else:
+        #     message = form.errors.popitem()[1][0]                 #弹出第一条验证失败错误信息
+        #     print(type(jsonify({'code':406})))
+        #     return JsonResponse({'code':412,'message':message})
+        # response=JsonResponse({'code':200,'message':'发送成功'})
+        # response['Access-Control-Allow-Origin']='*'
+    else:
+        return JsonResponse({"code": "408"})
+#  验证验证码
+def Verification(request):
+    if request.method == "POST":
+        now_dates = time.time()
+
+        mobble = json.loads(request.body)
+
+        mobbl = int(mobble['telephone'])
+        yecode = int(mobble["code"])
+
+        print(yecode)
+        try:
+            cursor = connection.cursor()
+
+            sql = "select * from securty WHERE telephone = {0}".format(mobbl)
+
+            bb = cursor.execute(sql)
+
+            res = cursor.fetchone()
+            print(res)
+
+            if (res[1] == yecode) and (float(res[2]) >= now_dates):
+
+                sql = "UPDATE securty set state = 2 WHERE telephone = {0}".format(mobbl)
+                bb = cursor.execute(sql)
+                r = {"code":0}
+            else:
+                r = {"code":403}
+
+            return JsonResponse(r)
+
+        except Exception as ex:
+            print(ex)
+    else:
+        return JsonResponse({"code": "408"})
+
+# ----------------------------------------
+
+# 修改密码
+def UpDataPwd(request):
+    if request.method == "POST":
+        mobble = json.loads(request.body)
+        print(mobble)
+        telephone = int(mobble['telephone'])
+        password = mobble['password3']
+        try:
+            res = models.UserBase.objects.filter(telephone=telephone).update(password=generate_password_hash(password, method='pbkdf2:sha1:2000', salt_length=8))
+            return JsonResponse({"code": 0})
+        except Exception as ex:
+            print(ex)
     else:
         return JsonResponse({"code": "408"})
