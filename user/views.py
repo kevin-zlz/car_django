@@ -5,6 +5,7 @@ import json
 from . import models
 from utils.tokenHelper import *
 from werkzeug.security import generate_password_hash, check_password_hash
+from car.models import CarDetail
 
 # ------------------------------
 import uuid
@@ -310,7 +311,7 @@ def queryOrderByCondithion(request):
                 pageCount = data['pageCount']
                 start = (index - 1) * pageCount
                 end = index * pageCount
-                print(start,end)
+                print(data)
                 uu = models.UserOrder.objects.filter(**condition).values('id', 'car__carname',
                                                                            'car__carid',
                                                                            'takecarplace__detailaddress',
@@ -354,6 +355,45 @@ def addorder(request):
                 # 修改车的所属门店
                 dd= models.CarBase.objects.filter(id=data['carid']).update(storeid__id=data['backstoreid'])
                 return JsonResponse({"code": "208"})
+            else:
+                return JsonResponse({"code": "408"})
+        except Exception as e:
+            return JsonResponse({"msg": e})
+
+
+# 查看订单详情
+def orderdetail(request):
+    if request.method == 'POST':
+        try:
+            token = request.META.get('HTTP_TOKEN')
+            if jwtDecoding(token):
+                telphone = jwtDecoding(token)['some']
+                data = json.loads(request.body)
+                orderinfo=models.UserOrder.objects.filter(id=data['orderid']).values('car__id','car__price','car__carname','car__brand','yonghu__telephone','yonghu__userdetail__realname','yonghu__userdetail__idcard',
+                                                                                     'yonghu__email','takecarplace__storeaddress__cityname','takecartime','takecarplace__detailaddress','takecarplace__storeaddress__id',
+                                                                                     'returncarplace__returncar__storeaddress__cityname','returncarplace__returncar__detailaddress','returncartime','returncarplace__returncar__storeaddress__id'
+                                                                                    )
+                cardetail=CarDetail.objects.filter(id=orderinfo[0]['car__id']).values()
+                all={
+                    "orderinfo":list(orderinfo),
+                    "carinfo":list(cardetail)
+                }
+                return JsonResponse(all,safe=False)
+            else:
+                return JsonResponse({"code": "408"})
+        except Exception as e:
+            return JsonResponse({"msg": e})
+
+# 付款
+def paymoney(request):
+    if request.method == 'POST':
+        try:
+            token = request.META.get('HTTP_TOKEN')
+            if jwtDecoding(token):
+                telphone = jwtDecoding(token)['some']
+                data = json.loads(request.body)
+                uu=models.UserOrder.objects.filter(id=data['orderid']).update(orderstate_id=1)
+                return JsonResponse({"code": "208"}, safe=False)
             else:
                 return JsonResponse({"code": "408"})
         except Exception as e:
