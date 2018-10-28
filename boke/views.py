@@ -35,15 +35,24 @@ def queryWritebyuid(request):
 def queryAllAritical(request):
     if request.method == 'POST':
         # try:
-
+                isover=False
+                mydata = json.loads(request.body, encoding='utf-8')
+                index=mydata['index']
+                pagesize=mydata['pagesize']
                 data=models.Aritical.objects.all().order_by('-pubtime').values('id','content','type__typename','pubtime','yonghu__uname','yonghu__icon_id__iconurl')
                 for i in range(len(data)):
                     data[i]["pubtime"]=datetime.datetime.strftime(data[i]["pubtime"],'%Y-%m-%d %H:%M:%S')
                     data[i]['starnum']=len(models.ArticalStart.objects.filter(artical__id=data[i]['id']).annotate(Count('id')).values('id'))
                     data[i]['commennum']=len(models.ArticalComment.objects.filter(artical__id=data[i]['id']).annotate(Count('id')).values('id'))
-                print(str(list(data)))
+                if len(data)>index*pagesize-1:
+                    data=data[0:index*pagesize]
+                    isover=True
+                res={
+                    "mydata":list(data),
+                    "isover":isover,
+                }
                 if data:
-                    return JsonResponse(list(data),safe=False)
+                    return JsonResponse(res,safe=False)
                 else:
                     return JsonResponse({"code": "408"})
 

@@ -6,6 +6,9 @@ from . import models
 from utils.tokenHelper import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from car.models import CarDetail
+from boke.models import Aritical
+from traval.models import UserAriseTravel
+from qiniu import Auth
 
 # 产生随机数
 import random
@@ -325,6 +328,7 @@ def queryOrder(request):
         except Exception as e:
             return JsonResponse({"msg": e})
 
+
 # 根据取还车时间以及完成取消的条件查询
 def queryOrderByCondithion(request):
     if request.method == 'POST':
@@ -434,6 +438,20 @@ def paymoney(request):
         except Exception as e:
             return JsonResponse({"msg": e})
 
+# 取消订单付款
+def cancelorder(request):
+    if request.method == 'POST':
+        try:
+            token = request.META.get('HTTP_TOKEN')
+            if jwtDecoding(token):
+                telphone = jwtDecoding(token)['some']
+                data = json.loads(request.body)
+                uu=models.UserOrder.objects.filter(id=data['orderid']).update(orderstate_id=2)
+                return JsonResponse({"code": "208"}, safe=False)
+            else:
+                return JsonResponse({"code": "408"})
+        except Exception as e:
+            return JsonResponse({"msg": e})
 
 # 添加还车表
 def addReturnCar(request):
@@ -538,15 +556,14 @@ def UpHead(request):
 def GetHead(request):
     if request.method == 'POST':
         token = request.META.get('HTTP_TOKEN')
-        print(token)
         # try:
         tokenMsg = jwt.decode(token.encode('utf-8'), SECRECT_KEY, audience='webkit', algorithms=['HS256'])
         telephpne = tokenMsg['some']
 
-        url1 = models.UserBase.objects.filter(telephone=telephpne).values('icon__iconurl')
+        url1 = models.UserBase.objects.filter(telephone=telephpne).values('icon__iconurl','uname')
         url = list(url1)[0]['icon__iconurl']
-        print(url)
-        return JsonResponse({"code": 0,"url":url})
+        uname=list(url1)[0]['uname']
+        return JsonResponse({"code": 0,"url":url,"uname":uname})
         # except Exception as ex:
         #     print(ex)
         #     return JsonResponse({"code": "408"})
@@ -654,3 +671,46 @@ def UpDataPwd(request):
             print(ex)
     else:
         return JsonResponse({"code": "408"})
+
+# 图片上传
+def qiniutoken(request):
+    if request.method == 'GET':
+        try:
+            # 需要填写你的 Access Key 和 Secret Key
+            access_key = 'egyqe8AdZTO3WyJj5no_isrVvmPfChCf4gRagdGf'
+            secret_key = 'hUSk9xf7k0SSbtYqPLT_k3wLNjNDlMpF_xQiEXHm'
+            filename = request.GET.get('key')
+            print(filename)
+            # 构建鉴权对象
+            q = Auth(access_key, secret_key)
+            # 要上传的空间
+            bucket_name = 'changanzuche'
+            key = str(uuid.uuid4()) + '.' + filename.split('.')[1]
+            # 生成上传 Token，可以指定过期时间等
+            token = q.upload_token(bucket_name, key, 3600)
+            # 此处要写加入数据库代码
+            domain = 'http://ph9cbg5cu.bkt.clouddn.com/'
+            return JsonResponse({"uptoken": token, "domain": domain, "key": key})
+        except Exception as ex:
+            print('error-------------------------')
+            print(ex)
+            return JsonResponse({"code": "408"})
+    else:
+        return JsonResponse({"code": "408"})
+
+# 根据用户号码查询订单数,文章数，活动数
+def getcount(request):
+    if request.method == 'POST':
+        try:
+            token = request.META.get('HTTP_TOKEN')
+            if jwtDecoding(token):
+                telphone = jwtDecoding(token)['some']
+                ordercount=models.UserOrder.objects.filter(yonghu__telephone=telphone).values('id').count()
+                articalcount=Aritical.objects.filter(yonghu__telephone=telphone).values('id').count()
+                acitivecount=UserAriseTravel.objects.filter(initiator__telephone=telphone).values('id').count()
+                print(ordercount,articalcount,acitivecount)
+                return JsonResponse({"ordercount": ordercount,"artcount":articalcount,"actcount":acitivecount},safe=False)
+            else:
+                return JsonResponse({"code": "408"})
+        except Exception as e:
+            return JsonResponse({"msg": e})
