@@ -7,7 +7,7 @@ from . import models
 from user.models import UserOrder
 import random
 from django.db.models import Q
-
+from django.db.models.aggregates import Count
 
 
 # Create your views here.
@@ -242,7 +242,6 @@ def querycarbyconditions(request):
 
 
 # 根据汽车id查询车辆基本及详情信息
-
 def querycarinfobyid(request):
     # 测试数据:
     #     {
@@ -311,3 +310,17 @@ def queryStoresbycity(request):
         except Exception as ex:
             return JsonResponse({"code":"408"})
 
+# 根据热门城市查询推荐车辆
+def queryhotcar(request):
+    if request.method == 'POST':
+        # try:
+
+            cityname = json.loads(request.body)['cityname']
+            cars=UserOrder.objects.filter(takecarplace__storeaddress__cityname=cityname).values('car__carname','car__cardetail__sitenum','car__brand','car__cardetail__oilcaptiy').annotate(count=Count("car__carname")).order_by('-count')[0:6]
+            print(cityname)
+            print(cars)
+            return JsonResponse(list(cars), safe=False)
+        # except Exception as e:
+        #     return JsonResponse({"code":408},safe=False)
+    else:
+        return JsonResponse({"code":608},safe=False)
