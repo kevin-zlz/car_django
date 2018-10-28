@@ -193,9 +193,7 @@ def queryAllTravel(request):
             datas=[]
             for travel in travels:
                 routelist=[]
-
                 uu=models.TravelPlace.objects.filter(places_id=travel['id']).values()
-
                 for i in uu:
                     routelist.append(i['address'])
                 aa=models.CityIcon.objects.filter(cityname=travel['travelstartplace']).values('iconurl')[0]['iconurl']
@@ -220,6 +218,58 @@ def queryAllTravel(request):
         #     return JsonResponse({"statuscode": "401"})
     else:
         return JsonResponse({"statuscode": "402"})
+
+# 多条件查询活动
+def queryAllTravelByCondition(request):
+    if request.method == 'POST':
+        # try:
+            isover = False
+            mydata = json.loads(request.body)
+            index = mydata['index']
+            pagesize = mydata['pagesize']
+            travels=models.UserAriseTravel.objects.all().order_by('-pubtime').values()
+            # travels=list(travels)
+            datas=[]
+            for travel in travels:
+                routelist=[]
+                uu=models.TravelPlace.objects.filter(places_id=travel['id']).values()
+                for i in uu:
+                    routelist.append(i['address'])
+                aa=models.CityIcon.objects.filter(cityname=travel['travelstartplace']).values('iconurl')[0]['iconurl']
+                joinnum=len(models.UserJoinTravel.objects.filter(joinTravel__id=travel['id']).values())
+                data={
+                    "initiator_id":travel['initiator_id'],
+                    "province":travel['travelstartplace'],
+                    "travelid":travel['id'],
+                    "travelstrattime":travel['travelstrattime'],
+                    "travelendtime":travel['travelendtime'],
+                    "menbers":travel['menbers'],
+                    "linkname":travel['linkname'],
+                    "linknumber":travel['linknumber'],
+                    "describe":travel['destribe'],
+                    "routelist":routelist,
+                    "cityicon":aa,
+                    "joinnum":joinnum
+                }
+                datas.append(data)
+            if len(datas) <= index * pagesize - 1:
+                print('1111111')
+                isover = True
+                datas = datas
+            else:
+                print('22222222')
+                isover = False
+                datas = datas[0:index * pagesize]
+            res = {
+                "mydata": list(datas),
+                "isover": isover,
+            }
+            return JsonResponse(res,safe=False)
+        # except Exception as ex:
+        #     return JsonResponse({"statuscode": "401"})
+    else:
+        return JsonResponse({"statuscode": "402"})
+
 
 # 用户根据活动id参与活动
 def joinTravelByid(request):
@@ -256,7 +306,6 @@ def deleteTravelByid(request):
                 telphone = decode['some']
                 uid = models.UserBase.objects.filter(telephone=telphone).values('id')[0]['id']
                 uu = json.loads(request.body)
-
                 res1 = models.UserJoinTravel.objects.filter(joinTravel__id=uu['travelid']).delete()
                 res2=models.TravelPlace.objects.filter(places__id=uu['travelid']).delete()
                 res3=models.UserAriseTravel.objects.filter(id=uu['travelid']).delete()
