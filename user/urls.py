@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'regist/', views.regist, name='regist'),
     url(r'addReturnCar/', views.addReturnCar, name='addReturnCar'),
     url(r'DicLoad/', views.DicLoad, name='DicLoad'),
+    url(r'uptel/', views.UpTel, name='UpTel'),
     url(r'fliename/', views.FlieName, name='FlieName'),
     url(r'uphead/', views.UpHead, name='UpHead'),
     url(r'gethead/', views.GetHead, name='GetHead'),
