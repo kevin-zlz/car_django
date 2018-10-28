@@ -39,7 +39,7 @@ def queryAllAritical(request):
                 mydata = json.loads(request.body, encoding='utf-8')
                 index=mydata['index']
                 pagesize=mydata['pagesize']
-                data=models.Aritical.objects.all().order_by('-pubtime').values('id','content','type__typename','pubtime','yonghu__uname','yonghu__icon_id__iconurl')
+                data=models.Aritical.objects.all().order_by('-pubtime').values('id','title','content','type__typename','pubtime','yonghu__uname','yonghu__icon_id__iconurl')
                 for i in range(len(data)):
                     data[i]["pubtime"]=datetime.datetime.strftime(data[i]["pubtime"],'%Y-%m-%d %H:%M:%S')
                     data[i]['starnum']=len(models.ArticalStart.objects.filter(artical__id=data[i]['id']).annotate(Count('id')).values('id'))
