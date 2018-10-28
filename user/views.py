@@ -498,9 +498,9 @@ def GetHead(request):
         print(token)
         # try:
         tokenMsg = jwt.decode(token.encode('utf-8'), SECRECT_KEY, audience='webkit', algorithms=['HS256'])
-        telephpne = tokenMsg['some']
+        telephone = tokenMsg['some']
 
-        url1 = models.UserBase.objects.filter(telephone=telephpne).values('icon__iconurl')
+        url1 = models.UserBase.objects.filter(telephone=telephone).values('icon__iconurl')
         url = list(url1)[0]['icon__iconurl']
         print(url)
         return JsonResponse({"code": 0,"url":url})
@@ -565,7 +565,7 @@ def Verification(request):
         now_dates = time.time()
 
         mobble = json.loads(request.body)
-
+        print(mobble)
         mobbl = int(mobble['telephone'])
         yecode = int(mobble["code"])
 
@@ -611,3 +611,35 @@ def UpDataPwd(request):
             print(ex)
     else:
         return JsonResponse({"code": "408"})
+
+# 修改手机号
+def UpTel(request):
+    if request.method == 'POST':
+        now_dates = time.time()
+        print(request.body)
+        mobble = json.loads(request.body)
+        mobbl = mobble['telephone']
+        yecode = int(mobble["code"])
+        print(yecode)
+        token = request.META.get('HTTP_TOKEN')
+        print(token)
+        try:
+            tokenMsg = jwt.decode(token.encode('utf-8'), SECRECT_KEY, audience='webkit', algorithms=['HS256'])
+            telephone = tokenMsg['some']
+            cursor = connection.cursor()
+            sql = "select * from securty WHERE telephone = {0}".format(mobbl)
+            bb = cursor.execute(sql)
+            res = cursor.fetchone()
+            print(res)
+            if (res[1] == yecode) and (float(res[2]) >= now_dates):
+                sql = "UPDATE securty set state = 2 WHERE telephone = {0}".format(mobbl)
+                bb = cursor.execute(sql)
+                res = models.UserBase.objects.filter(telephone=telephone).update(telephone=mobbl)
+                return JsonResponse({"code": 0})
+            else:
+                return JsonResponse({"code": "408"})
+        except Exception as ex:
+            print(ex)
+            return JsonResponse({"code": "409"})
+    else:
+        return JsonResponse({"code": "4010"})
