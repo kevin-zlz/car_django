@@ -560,8 +560,8 @@ def GetHead(request):
         tokenMsg = jwt.decode(token.encode('utf-8'), SECRECT_KEY, audience='webkit', algorithms=['HS256'])
         telephone = tokenMsg['some']
 
-        url1 = models.UserBase.objects.filter(telephone=telephpne).values('icon__iconurl','uname')
-        url1 = models.UserBase.objects.filter(telephone=telephone).values('icon__iconurl')
+        url1 = models.UserBase.objects.filter(telephone=telephone).values('icon__iconurl','uname')
+        # url1 = models.UserBase.objects.filter(telephone=telephone).values('icon__iconurl')
         url = list(url1)[0]['icon__iconurl']
         uname=list(url1)[0]['uname']
         return JsonResponse({"code": 0,"url":url,"uname":uname})
