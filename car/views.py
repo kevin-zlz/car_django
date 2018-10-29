@@ -158,27 +158,20 @@ def querycarbystore(request):
     if request.method == 'POST':
         # try:
             condition = json.loads(request.body)
-            # print(condition)
+            print(condition)
             takestoreid=models.CityStore.objects.filter(storename=condition['takestore'],storeaddress__cityname=condition['takecityname']).values('id')[0]['id']
-            # backstoreid=models.CityStore.objects.filter(storename=condition['backstore'],storeaddress__cityname=condition['backcityname']).values('id')[0]['id']
-            # print(takestoreid,backstoreid)
-        # Q(takecartime__gt=datetime.strptime(condition['backtime'],'%Y-%m-%d %H:%M:%S'))
-        #     print(condition['backtime'])
-        #     print(type(condition['backtime']))
-        #     str1 = '2018-10-19'
-
             # 订单中不可用车辆
             order=UserOrder.objects.all().exclude(Q(returncartime__gte=datetime.strptime(condition['backtime'],'%Y-%m-%d %H:%M:%S'))|Q(takecartime__gt=datetime.strptime(condition['backtime'],'%Y-%m-%d %H:%M:%S'))).values('id','takecartime','returncartime','car__id')
             caridlist=[]
             index = condition['currentPage']
             pageCount = condition['pageCount']
-            print('---------', index, pageCount)
-            start = (index - 1) * pageCount
-            end = index * pageCount - 1
+            # print('---------', index, pageCount)
+            # # start = (index - 1) * pageCount
+            # # end = index * pageCount - 1
             for o in order:
                 caridlist.append(o['car__id'])
             print(caridlist)
-            cars=models.CarBase.objects.exclude(id__in=caridlist).filter(storeid=takestoreid).values()[start:end]
+            cars=models.CarBase.objects.exclude(id__in=caridlist).filter(storeid=takestoreid).values()
             # print(cars)
             # return -0JsonResponse(strictandstores,safe=False)
             return JsonResponse(list(cars),safe=False)
@@ -194,16 +187,12 @@ def querycarbyconditions(request):
         # try:
         condition = json.loads(request.body)
         print(condition)
-        takestoreid = models.CityStore.objects.filter(storename=condition['condition']['takestore'],
-                                                      storeaddress__cityname=condition['condition']['takecityname']).values('id')[0][
-            'id']
-        backstoreid=models.CityStore.objects.filter(storename=condition['condition']['backstore'],storeaddress__cityname=condition['condition']['backcityname']).values('id')[0]['id']
+        # takestoreid = models.CityStore.objects.filter(storename=condition['condition']['takestore'],
+        #                                               storeaddress__cityname=condition['condition']['takecityname']).values('id')[0]['id']
+        takestoreid=condition['condition']['takestoreid']
+        # backstoreid=models.CityStore.objects.filter(storename=condition['condition']['backstore'],storeaddress__cityname=condition['condition']['backcityname']).values('id')[0]['id']
+        backstoreid = condition['condition']['backstoreid']
         print(takestoreid,backstoreid)
-        # Q(takecartime__gt=datetime.strptime(condition['backtime'],'%Y-%m-%d %H:%M:%S'))
-        #     print(condition['backtime'])
-        #     print(type(condition['backtime']))
-        #     str1 = '2018-10-19'
-
         # 订单中不可用车辆
         order = UserOrder.objects.all().exclude(
             Q(returncartime__gte=datetime.strptime(condition['condition']['taketime'], '%Y-%m-%d %H:%M:%S')) | Q(
@@ -231,8 +220,8 @@ def querycarbyconditions(request):
         end=index*pageCount-1
         # print(caridlist,condition['condition']['carPingpai'],condition['condition']['carLeixing'],int(condition['condition']['carJiage']))
         # cars = models.CarBase.objects.exclude(id__in=caridlist).filter(storeid=takestoreid).filter(brand__in=condition['condition']['condition']['carPingpai'],cartype__in=condition['condition']['condition']['carLeixing'],price__lte=int(condition['condition']['condition']['carJiage'])).values()
-        cars = models.CarBase.objects.exclude(id__in=caridlist).filter(storeid=takestoreid).filter(**con).values()[start:end]
-        print(cars)
+        cars = models.CarBase.objects.exclude(id__in=caridlist).filter(storeid=takestoreid).filter(**con).values()
+
         # return -0JsonResponse(strictandstores,safe=False)
         return JsonResponse(list(cars), safe=False)
     # except Exception as ex:

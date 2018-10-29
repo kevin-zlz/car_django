@@ -345,24 +345,26 @@ def queryOrderByCondithion(request):
                     condition['add_time__gte']=data['fromtime']
                 if data['statename']:
                     condition['orderstate__statename']=data['statename']
-
                 index = data['currentPage']
                 pageCount = data['pageCount']
                 start = (index - 1) * pageCount
                 end = index * pageCount
-                print(data)
-                uu = models.UserOrder.objects.filter(**condition).values('id', 'car__carname',
-                                                                           'car__carid',
-                                                                           'takecarplace__detailaddress',
-                                                                           'takecarplace__storeaddress__cityname',
-                                                                           'takecarplace__storeaddress__strictname',
-                                                                           'takecartime',
-                                                                           'returncarplace__returncar__storeaddress__cityname',
-                                                                           'returncarplace__returncar__storeaddress__strictname',
-                                                                           'returncarplace__returncar__detailaddress',
-                                                                           'returncartime', 'orderstate__statename',
-                                                                           'ordertype__typename', 'car__price',
-                                                                           'ordertype__id')[start:end]
+                print(condition,start,end)
+                uu = models.UserOrder.objects.filter(**condition).values(
+                    'id', 'car__carname',
+                    'car__carid',
+                    'takecarplace__detailaddress',
+                    'takecarplace__storeaddress__cityname',
+                    'takecarplace__storeaddress__strictname',
+                    'takecartime',
+                    'returncarplace__returncar__storeaddress__cityname',
+                    'returncarplace__returncar__storeaddress__strictname',
+                    'returncarplace__returncar__detailaddress',
+                    'returncartime', 'orderstate__statename',
+                    'ordertype__typename', 'car__price',
+                    'ordertype__id'
+                )
+
                 return JsonResponse(list(uu), safe=False)
             else:
                 return JsonResponse({"code": "408"})
