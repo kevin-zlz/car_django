@@ -345,24 +345,26 @@ def queryOrderByCondithion(request):
                     condition['add_time__gte']=data['fromtime']
                 if data['statename']:
                     condition['orderstate__statename']=data['statename']
-
                 index = data['currentPage']
                 pageCount = data['pageCount']
                 start = (index - 1) * pageCount
                 end = index * pageCount
-                print(data)
-                uu = models.UserOrder.objects.filter(**condition).values('id', 'car__carname',
-                                                                           'car__carid',
-                                                                           'takecarplace__detailaddress',
-                                                                           'takecarplace__storeaddress__cityname',
-                                                                           'takecarplace__storeaddress__strictname',
-                                                                           'takecartime',
-                                                                           'returncarplace__returncar__storeaddress__cityname',
-                                                                           'returncarplace__returncar__storeaddress__strictname',
-                                                                           'returncarplace__returncar__detailaddress',
-                                                                           'returncartime', 'orderstate__statename',
-                                                                           'ordertype__typename', 'car__price',
-                                                                           'ordertype__id')[start:end]
+                print(condition,start,end)
+                uu = models.UserOrder.objects.filter(**condition).values(
+                    'id', 'car__carname',
+                    'car__carid',
+                    'takecarplace__detailaddress',
+                    'takecarplace__storeaddress__cityname',
+                    'takecarplace__storeaddress__strictname',
+                    'takecartime',
+                    'returncarplace__returncar__storeaddress__cityname',
+                    'returncarplace__returncar__storeaddress__strictname',
+                    'returncarplace__returncar__detailaddress',
+                    'returncartime', 'orderstate__statename',
+                    'ordertype__typename', 'car__price',
+                    'ordertype__id'
+                )
+
                 return JsonResponse(list(uu), safe=False)
             else:
                 return JsonResponse({"code": "408"})
@@ -560,8 +562,8 @@ def GetHead(request):
         tokenMsg = jwt.decode(token.encode('utf-8'), SECRECT_KEY, audience='webkit', algorithms=['HS256'])
         telephone = tokenMsg['some']
 
-        url1 = models.UserBase.objects.filter(telephone=telephpne).values('icon__iconurl','uname')
-        url1 = models.UserBase.objects.filter(telephone=telephone).values('icon__iconurl')
+        url1 = models.UserBase.objects.filter(telephone=telephone).values('icon__iconurl','uname')
+        # url1 = models.UserBase.objects.filter(telephone=telephone).values('icon__iconurl')
         url = list(url1)[0]['icon__iconurl']
         uname=list(url1)[0]['uname']
         return JsonResponse({"code": 0,"url":url,"uname":uname})
