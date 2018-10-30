@@ -10,6 +10,14 @@ from django.db.models import Q
 from django.db.models.aggregates import Count
 
 
+
+# 添加汽车图片
+def addcarimg(request):
+    if request.method == 'POST':
+        cars=models.CarBase.objects.all().values('id','carname')
+        for car in cars:
+            ca=models.CarBase.objects.filter(id=car['id']).update(carimg=(car['carname']+'.jpg'))
+        return JsonResponse({"code": "808"})
 # Create your views here.
 # 添加城市
 def addcity(request):
@@ -193,7 +201,6 @@ def querycarbyconditions(request):
                 takecartime__gte=datetime.strptime(condition['condition']['backtime'], '%Y-%m-%d %H:%M:%S'))).values('id',
                                                                                                        'takecartime',
                                                                                                                     'car__carname',
-
                                                                                                        'returncartime',
                                                                                                        'car__id')
         # print(order)
