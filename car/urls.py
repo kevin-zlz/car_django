@@ -26,6 +26,7 @@ urlpatterns = [
     # url(r'^$', views.index,name='myindex'),
     # #路由部分
     url(r'addcity/', views.addcity, name='addcity'),
+    url(r'addcarimg/', views.addcarimg, name='addcarimg'),
     url(r'addcitystore/', views.addcitystore, name='addcitystore'),
     url(r'addcardetail/', views.addcardetail, name='addcardetail'),
     url(r'querycarinfobyid/', views.querycarinfobyid, name='querycarinfobyid'),

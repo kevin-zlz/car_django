@@ -225,7 +225,9 @@ def queryAllTravelByCondition(request):
     if request.method == 'POST':
         # try:
         token = request.META.get('HTTP_TOKEN')
+        print(token)
         if token!='undefined':
+
             decode = jwt.decode(token, SECRECT_KEY, audience='webkit', algorithms=['HS256'])
             if decode:
                 telphone = decode['some']
@@ -323,6 +325,7 @@ def queryAllTravelByCondition(request):
                     data["statename"] = '立即参加'
                 else:
                     data["statename"] = '人数已满'
+                print(data["statename"])
                 datas.append(data)
             if len(datas) <= index * pagesize - 1:
                 isover = True
@@ -334,6 +337,7 @@ def queryAllTravelByCondition(request):
                 "mydata": list(datas),
                 "isover": isover,
             }
+            print('22222222222222222222222222222222222222')
             return JsonResponse(res, safe=False)
         # except Exception as ex:
         #     return JsonResponse({"statuscode": "401"})

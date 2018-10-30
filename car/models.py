@@ -29,6 +29,7 @@ class CarBase(models.Model):
     price=models.IntegerField()
     brand=models.CharField(max_length=100)
     cartype=models.CharField(max_length=30)
+    carimg=models.CharField(max_length=50,default='丰田致炫.jpg')
 
 class CarImages(models.Model):
     car = models.ForeignKey(to='CarBase', to_field='id', on_delete=models.CASCADE, default=1)
