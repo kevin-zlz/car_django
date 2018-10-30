@@ -70,7 +70,7 @@ def queryAriticalByaid(request):
         # try:
                 data = json.loads(request.body, encoding='utf-8')
                 aid = data['aid']
-                data=models.Aritical.objects.filter(id=aid).values('id','content','type__typename','pubtime','yonghu__uname','yonghu__icon_id__iconurl')
+                data=models.Aritical.objects.filter(id=aid).values('id','title','content','type__typename','pubtime','yonghu__uname','yonghu__icon_id__iconurl')
                 for i in range(len(data)):
                     data[i]["pubtime"]=datetime.datetime.strftime(data[i]["pubtime"],'%Y-%m-%d %H:%M:%S')
                     data[i]['starnum']=len(models.ArticalStart.objects.filter(artical__id=data[i]['id']).annotate(Count('id')).values('id'))

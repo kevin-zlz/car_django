@@ -226,8 +226,7 @@ def queryAllTravelByCondition(request):
         # try:
         token = request.META.get('HTTP_TOKEN')
         print(token)
-        if token!='undefined':
-
+        if token!='no':
             decode = jwt.decode(token, SECRECT_KEY, audience='webkit', algorithms=['HS256'])
             if decode:
                 telphone = decode['some']
@@ -293,6 +292,7 @@ def queryAllTravelByCondition(request):
 
                 return JsonResponse(res,safe=False)
         else:
+            print('-----------------------------')
             isover = False
             mydata = json.loads(request.body)
             index = mydata['index']
