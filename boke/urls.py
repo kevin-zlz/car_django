@@ -26,6 +26,7 @@ urlpatterns = [
     # url(r'^$', views.index,name='myindex'),
     # #路由部分
     url(r'queryWritebyuid/', views.queryWritebyuid, name='queryWritebyuid'),
+    url(r'queryarticalmaster/', views.queryarticalmaster, name='queryarticalmaster'),
     url(r'queryAllAritical/', views.queryAllAritical, name='queryAllAritical'),
     url(r'queryAriticalByaid/', views.queryAriticalByaid, name='queryAriticalByaid'),
     url(r'queryCommentbyuid/', views.queryCommentbyuid, name='queryCommentbyuid'),
