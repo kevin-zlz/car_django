@@ -320,7 +320,7 @@ def queryOrder(request):
                                                                            'returncarplace__returncar__storeaddress__cityname',
                                                                            'returncarplace__returncar__storeaddress__strictname',
                                                                            'returncarplace__returncar__detailaddress',
-                                                                           'returncartime', 'orderstate__statename',
+                                                                           'returncartime', 'orderstate__statename','car__carimg',
                                                                            'ordertype__typename', 'car__price','ordertype__id')[start:end]
                 return JsonResponse(list(uu), safe=False)
             else:
@@ -362,7 +362,7 @@ def queryOrderByCondithion(request):
                     'returncarplace__returncar__detailaddress',
                     'returncartime', 'orderstate__statename',
                     'ordertype__typename', 'car__price',
-                    'ordertype__id'
+                    'ordertype__id','car__carimg'
                 )
 
                 return JsonResponse(list(uu), safe=False)
