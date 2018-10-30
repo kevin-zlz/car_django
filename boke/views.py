@@ -347,3 +347,29 @@ def deletelikebysid(request):
         #     return JsonResponse({"code": "408"})
     else:
         return JsonResponse({"code": "408"})
+
+# 根据文章id查询发帖人信息
+def queryarticalmaster(request):
+    if request.method == 'POST':
+        try:
+            data=json.loads(request.body,encoding='utf-8')
+            artid=data['aid']
+            yonghu=models.Aritical.objects.filter(id=artid).values('yonghu__id','yonghu__uname','yonghu__icon__iconurl')
+            # 用户文章被赞数
+            starnum=0
+            comment=0
+            yonghuarts=models.Aritical.objects.filter(yonghu__id=yonghu[0]['yonghu__id']).values('id')
+            for art in yonghuarts:
+                starnum=starnum+models.ArticalStart.objects.filter(artical__id=art['id']).values().count()
+            # 用户文章评论数
+            for art in yonghuarts:
+                comment=comment+models.ArticalComment.objects.filter(artical__id=art['id']).values().count()
+            user={
+                "uname":yonghu[0]['yonghu__uname'],
+                "userimg":yonghu[0]['yonghu__icon__iconurl'],
+                "starnum":starnum,
+                "commment":comment
+            }
+            return JsonResponse(user,safe=False)
+        except Exception as e:
+            return JsonResponse({"code": "408"})
