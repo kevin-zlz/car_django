@@ -194,7 +194,7 @@ def adduserdetailbyid(request):
                 return JsonResponse({"code":"808"})
         except Exception as ex:
             print(ex)
-            return JsonResponse({"node":"408"})
+            return JsonResponse({"code":"408"})
     else:
         return JsonResponse({"code":"404"})
 # 更新用户手机号码
