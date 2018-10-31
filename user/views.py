@@ -33,17 +33,18 @@ def login(request):
         # try:
             u = models.UserBase.objects.filter(telephone=user['telphone']).values('password')
             print(u)
-            print(u[0]['password'])
-            print(data['password'])
-            if u and check_password_hash(u[0]['password'], data['password']):
-                result = {"code": "808"}
-                resp = response.HttpResponse(json.dumps(result), status=200, charset='utf-8',
-                                             content_type='application/json')
-                resp['token'] = jwtEncoding(data['telphone'])
-                resp['Access-Control-Expose-Headers'] = 'token'
-                return resp
+            if u:
+                if u and check_password_hash(u[0]['password'], data['password']):
+                    result = {"code": "808"}
+                    resp = response.HttpResponse(json.dumps(result), status=200, charset='utf-8',
+                                                 content_type='application/json')
+                    resp['token'] = jwtEncoding(data['telphone'])
+                    resp['Access-Control-Expose-Headers'] = 'token'
+                    return resp
+                else:
+                    return JsonResponse({"code": "404"})
             else:
-                return JsonResponse({"code": "404"})
+                return JsonResponse({"code": "604"})
         # except Exception as ex:
         #     return JsonResponse({"code": "408"})
     else:
@@ -410,7 +411,7 @@ def orderdetail(request):
             if jwtDecoding(token):
                 telphone = jwtDecoding(token)['some']
                 data = json.loads(request.body)
-                orderinfo=models.UserOrder.objects.filter(id=data['orderid']).values('car__id','car__price','car__carname','car__brand','yonghu__telephone','yonghu__userdetail__realname','yonghu__userdetail__idcard',
+                orderinfo=models.UserOrder.objects.filter(id=data['orderid']).values('car__id','car__price','car__carname','car__carimg','car__brand','yonghu__telephone','yonghu__userdetail__realname','yonghu__userdetail__idcard',
                                                                                      'yonghu__email','takecarplace__storeaddress__cityname','takecartime','takecarplace__detailaddress','takecarplace__storeaddress__id',
                                                                                      'returncarplace__returncar__storeaddress__cityname','returncarplace__returncar__detailaddress','returncartime','returncarplace__returncar__storeaddress__id'
                                                                                     )

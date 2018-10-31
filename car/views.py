@@ -214,8 +214,11 @@ def querycarbyconditions(request):
         if condition['condition']['condition']['carLeixing']:
             con['cartype__in']=condition['condition']['condition']['carLeixing']
         if condition['condition']['condition']['carJiage']:
-            con['price__lte']=int(condition['condition']['condition']['carJiage'])
-
+            if condition['condition']['condition']['carJiage']!='500+':
+                con['price__lte']=int(condition['condition']['condition']['carJiage'])
+                con['price__gte']=int(condition['condition']['condition']['carJiage'])-150
+            else:
+                con['price__gte'] = 500
         # index=condition['condition']['currentPage']
         # pageCount=condition['condition']['pageCount']
         # print('---------',index,pageCount)

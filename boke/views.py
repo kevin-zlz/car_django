@@ -369,8 +369,10 @@ def queryarticalmaster(request):
                 "uname":yonghu[0]['yonghu__uname'],
                 "userimg":yonghu[0]['yonghu__icon__iconurl'],
                 "starnum":starnum,
-                "commment":comment
+                "commment":comment,
             }
+            print(starnum,comment)
+            print(user)
             return JsonResponse(user,safe=False)
         except Exception as e:
             return JsonResponse({"code": "408"})
